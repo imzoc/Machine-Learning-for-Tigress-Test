@@ -1,0 +1,57 @@
+#include "../header.h"
+
+TYPE array1[] = {LEFT,RIGHT,LEFT,RIGHT};
+TYPE array2[] = {LEFT,RIGHT,LEFT,RIGHT};
+
+int n = 4;
+
+void tigress_init () {
+}
+
+void tigress_obf () {
+  int c, d;
+  TYPE swap;
+  for (c = 0 ; c < ( n - 1 ); c++) {
+    for (d = 0 ; d < n - c - 1; d++)   {
+      if (array1[d] > array1[d+1]) {
+        swap        = array1[d];
+        array1[d]   = array1[d+1];
+        array1[d+1] = swap;
+      }
+    }
+  }
+}
+
+void tigress_orig () {
+  int c, d;
+  TYPE swap;
+  for (c = 0 ; c < ( n - 1 ); c++) {
+    for (d = 0 ; d < n - c - 1; d++)   {
+      if (array2[d] > array2[d+1]) {
+        swap        = array2[d];
+        array2[d]   = array2[d+1];
+        array2[d+1] = swap;
+      }
+    }
+  }
+}
+
+int main(int argc, char **argv){
+   int result = 1;
+   int c;
+
+   tigress_init();
+
+   tigress_obf();
+   tigress_orig();
+
+  for ( c = 0 ; c < n ; c++ )
+     if (array1[c] != array2[c])
+       result = 0;
+  
+   if (result == 1) 
+      printf("SUCCESS %s \"%s\"\n", NAME, STR(TYPE));
+   else
+      printf("FAILURE %s \"%s\"\n", NAME, STR(TYPE));
+   return 0;
+}

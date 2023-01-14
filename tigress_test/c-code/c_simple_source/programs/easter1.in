@@ -1,0 +1,56 @@
+#include "../header.h"
+#include<string.h>
+
+// https://rosettacode.org/wiki/Holidays_related_to_Easter#C
+
+void tigress_init () {
+}
+
+typedef int year_t, month_t, week_t, day_t;
+
+typedef struct{
+  year_t year; 
+  month_t month;  
+  day_t month_day;
+} date_t;
+ 
+date_t tigress_obf (year_t year) {
+      date_t date; 
+      date.year = year;
+      int c = year / 100, n = year % 19; /* 19 years: Metonic cycle */
+      int i = (c - c / 4 - (c - (c - 17) / 25) / 3 + 19 * n + 15) % 30;
+      i -= (i / 28) * (1 - (i / 28) * (29 / (i + 1)) * ((21 - n) / 11));
+      int l = i - (year + year / 4 + i + 2 - c + c / 4) % 7;
+      date.month = 3 + (l + 40) / 44;
+      date.month_day = l + 28 - 31 * (date.month / 4);
+      return date;
+}
+ 
+date_t tigress_orig (year_t year) {
+      date_t date; 
+      date.year = year;
+      int c = year / 100, n = year % 19; /* 19 years: Metonic cycle */
+      int i = (c - c / 4 - (c - (c - 17) / 25) / 3 + 19 * n + 15) % 30;
+      i -= (i / 28) * (1 - (i / 28) * (29 / (i + 1)) * ((21 - n) / 11));
+      int l = i - (year + year / 4 + i + 2 - c + c / 4) % 7;
+      date.month = 3 + (l + 40) / 44;
+      date.month_day = l + 28 - 31 * (date.month / 4);
+      return date;
+}
+ 
+
+int main(int argc, char **argv){
+   tigress_init();
+
+   date_t result = tigress_obf(2017);
+   date_t r = tigress_orig(2017);
+  
+   if ((result.year == r.year) && (result.year == 2017) && (result.month=r.month) && (result.month_day == r.month_day))
+      printf("SUCCESS %s\n", NAME);
+   else
+      printf("FAILURE %s\n", NAME);
+   return 0;
+}
+
+#include <stdio.h>
+ 

@@ -1,0 +1,42 @@
+#include "../header.h"
+
+TYPE left;
+TYPE right;
+
+typedef struct {
+  long b;
+  TYPE a;
+  long c;
+} A;
+
+void tigress_init () {
+}
+
+void tigress_obf (A* f) {
+   f->a = left;
+}
+
+void tigress_orig (A* f) {
+   f->a = left;
+}
+
+int main(int argc, char **argv){
+   tigress_init();
+
+   left = LEFT;
+   right = RIGHT;
+
+   A x;
+   A y;
+   x.a = right;
+   y.a = right;
+
+   tigress_obf(&x);
+   tigress_orig(&y);
+
+   if ((x.a == left) && (y.a == left))
+      printf("SUCCESS %s \"%s\"\n", NAME, STR(TYPE));
+   else
+      printf("FAILURE %s \"%s\"\n", NAME, STR(TYPE));
+   return 0;
+}

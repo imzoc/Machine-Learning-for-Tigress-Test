@@ -1,0 +1,42 @@
+#include "../header.h"
+
+int result;
+int r;
+TYPE left;
+TYPE right;
+
+void tigress_init () {
+}
+
+void tigress_obf () {
+   TYPE i = left;
+   do {
+      i INCR;
+      result++;
+   } while (i OP right);
+}
+
+void tigress_orig () {
+   TYPE i = left;
+   do {
+      i INCR;
+      r++;
+   } while (i OP right);
+}
+
+int main(int argc, char **argv){
+   result = -1;
+   r = -1;
+   tigress_init();
+
+   left = LEFT;
+   right = RIGHT;
+   tigress_obf();
+   tigress_orig();
+
+   if ((result == r) && (result >= 0))
+      printf("SUCCESS %s \"%s\" \"%s\"\n", NAME, STR(TYPE), STR(OP));
+   else
+      printf("FAILURE %s \"%s\" \"%s\"\n", NAME, STR(TYPE), STR(OP));
+   return 0;
+}

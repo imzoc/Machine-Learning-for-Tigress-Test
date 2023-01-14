@@ -1,0 +1,46 @@
+#include "../header.h"
+
+TYPE result;
+TYPE left;
+
+typedef struct {
+  long b;
+  TYPE a;
+  long c;
+} A;
+
+A a;
+
+A tigress_callee() {
+   return a;
+}
+
+void tigress_init () {
+}
+
+void tigress_obf () {
+   A r = tigress_callee();
+   result = r.a;
+}
+
+
+int main(int argc, char **argv){
+   #ifdef JIT
+      printf("UNIMPLEMENTED_FOR_JIT\n");
+      exit(0);
+   #endif
+
+   result = -1;
+   tigress_init();
+
+   left = LEFT;
+   a.a = left;
+
+   tigress_obf();
+
+   if (result == left)
+      printf("SUCCESS %s \"%s\"\n", NAME, STR(TYPE));
+   else
+      printf("FAILURE %s \"%s\"\n", NAME, STR(TYPE));
+   return 0;
+}

@@ -1,0 +1,13 @@
+tigress_test2.exe run <script-file> [options] | rerun [results-file] | continue [results-file] | continue-queue [options] | testcases-run <test cases file> [options] | worker-run <test cases file list> [options] | adhoc [options] | status [options] | stop [options] | help [topic] 
+Provide the arguments "run --help" to list the options for the run subcommand.
+  --path-to-c-compiler Location of C compiler to use; Either this must be provided or the path must be provided in the configuration file found in a conventional location: ~/.tigress-test/config or ~/.tigress-test-config or .tigress-test-config
+  --No-Config-File Don't use a config file.
+  --config-file Name of the configuration file to use, overriding the default
+  --parallel-processes Number of parallel processes for testing on the local machine; if this is set, the program will also try to run tests in parallel on remote machines if they are configured.
+  --parallel-run The program will try to run tests in parallel on remote machines if they are configured and on the local machine depending on the setting of "--remote-hosts" and "--remote-only".
+  --generate-only Generate test cases but do not run the tests.
+  --remote-only Run test cases only on remote machines, not on the local machine.
+  --remote-hosts Run test cases for the hosts with the host names/addresses given in a comma separated list.
+  --verbosity A verbosity level between 0 and 5 for log and console output: 0 - no log or console output; 1 - output in brief; 2 - include error messages as well; 3 - include warning messages as well; 4 - include verbose information; 5 - include verbose debugging information
+  -help  Display this list of options
+  --help  Display this list of options

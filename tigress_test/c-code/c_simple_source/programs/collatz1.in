@@ -1,0 +1,31 @@
+#include "../header.h"
+
+TYPE result;
+
+void tigress_init () {
+}
+
+void tigress_obf() {
+  TYPE n = LEFT;
+  while(n != 1) {
+    if(n % 2 == 0) {
+      n /= 2;
+    } else {
+      n = (3 * n) + 1;
+    }
+  }
+  result = n;
+}
+int main(int argc, char **argv){
+   result = -1;
+
+   tigress_init();
+
+   tigress_obf();
+  
+   if (result == 1) 
+      printf("SUCCESS %s \"%s\"\n", NAME, STR(TYPE));
+   else
+      printf("FAILURE %s \"%s\"\n", NAME, STR(TYPE));
+   return 0;
+}

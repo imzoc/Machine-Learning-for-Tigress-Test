@@ -1,0 +1,41 @@
+{
+  "file_type": "script",
+  "file_format_version": [ 1 ],
+  "seeds": [ 1 ],
+  "compiler_spec": {
+    "filename": "gcc",
+    "version": "5.4",
+    "version_command": "gcc --version"
+  },
+  "compiler_options": "",
+  "tigress_spec": {
+    "filename": "cp_file.bash",
+    "version": "3.2",
+    "version_command": ""
+  },
+  "tigress_options": "--Environment=x86_64:Linux:Gcc:4.6",
+  "source_files": [
+    {
+      "filename": "database/c_source/full_test_arg_and_input.c",
+      "checksum": "",
+      "input": "f",
+      "args": ["c"]
+    },
+    {
+      "filename": "database/c_source/full_test_[ia][nr][pg].c",
+      "checksum": "",
+      "args": ["b"]
+    }
+  ],
+  "transformations": [
+    {
+      "pipeline": [
+        {
+          "name": "Ident",
+          "options": [
+          ]
+        }
+      ]
+    }
+  ]
+}

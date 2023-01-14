@@ -1,0 +1,12 @@
+{
+  "format_version": [ 1 ],
+  "path_to_program": "tigress",
+  "program_default_options": "--Environment=x86_64:Linux:Gcc:4.6 -D _Float128=double ",
+  "compiler_options": "-lm -lpthread",
+  "database_dir": "database",
+  "path_to_c_compiler": "/usr/bin/gcc",
+  "default_script": "src/tigress_test2/script_01.json",
+  "output_dir": "test_output"
+  ,"compatible_platforms": ["Linux_x86"]
+  ,"remote_results_sync_interval_seconds": 5
+}

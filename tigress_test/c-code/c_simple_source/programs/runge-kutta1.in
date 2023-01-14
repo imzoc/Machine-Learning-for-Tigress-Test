@@ -1,0 +1,54 @@
+#include "../header.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
+
+//https://rosettacode.org/wiki/Runge-Kutta_method#C
+
+void tigress_init () {
+}
+ 
+double tigress_obf(double(*f)(double, double), double dx, double x, double y) {
+   double   k1 = dx * f(x, y),
+      k2 = dx * f(x + dx / 2, y + k1 / 2),
+      k3 = dx * f(x + dx / 2, y + k2 / 2),
+      k4 = dx * f(x + dx, y + k3);
+   return y + (k1 + 2 * k2 + 2 * k3 + k4) / 6;
+}
+ 
+double tigress_orig(double(*f)(double, double), double dx, double x, double y) {
+   double   k1 = dx * f(x, y),
+      k2 = dx * f(x + dx / 2, y + k1 / 2),
+      k3 = dx * f(x + dx / 2, y + k2 / 2),
+      k4 = dx * f(x + dx, y + k3);
+   return y + (k1 + 2 * k2 + 2 * k3 + k4) / 6;
+}
+ 
+double rate(double x, double y) {
+   return x * sqrt(y);
+}
+ 
+int main(void) {
+   tigress_init();
+
+   double x0 = 0, x1 = 10, dx = .1;
+   int i, n = 1 + (x1 - x0)/dx;
+
+   double *y_obf = malloc(sizeof(double) * n);
+   double *y_orig = malloc(sizeof(double) * n);
+ 
+   for (y_obf[0] = 1, i = 1; i < n; i++)
+      y_obf[i] = tigress_obf(rate, dx, x0 + dx * (i - 1), y_obf[i-1]);
+
+   for (y_orig[0] = 1, i = 1; i < n; i++)
+      y_orig[i] = tigress_orig(rate, dx, x0 + dx * (i - 1), y_orig[i-1]);
+ 
+   double result = y_obf[n-1];
+   double r = y_orig[n-1];
+
+   if (result == r) 
+      printf("SUCCESS %s\n", NAME);
+   else
+      printf("FAILURE %s\n", NAME);
+   return 0;
+}

@@ -1,0 +1,31 @@
+#include "../header.h"
+
+TYPE result;
+TYPE left;
+
+void tigress_init () {
+}
+
+void tigress_callee(TYPE *x) {
+   result = *x;
+}
+
+void tigress_obf () {
+   tigress_callee(&left);
+}
+
+
+int main(int argc, char **argv){
+   result = -1;
+
+   tigress_init();
+
+   left = LEFT;
+   tigress_obf();
+
+   if (result == left)
+      printf("SUCCESS %s \"%s\"\n", NAME, STR(TYPE));
+   else
+      printf("FAILURE %s \"%s\"\n", NAME, STR(TYPE));
+   return 0;
+}

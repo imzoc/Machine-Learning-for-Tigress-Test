@@ -1,0 +1,33 @@
+#include "../header.h"
+
+int myArr[2];
+TYPE left;
+TYPE right;
+int result;
+
+void tigress_init () {
+}
+
+void tigress_obf () {
+  result = myArr[left] + myArr[right];
+}
+
+int main(int argc, char **argv){
+   result = -1;
+
+   tigress_init();
+
+   left= (TYPE)0;
+   right= (TYPE)1;
+
+   myArr[left] = 10;
+   myArr[right] = 20;
+
+   tigress_obf();
+
+   if (result == 30)
+      printf("SUCCESS %s \"%s\" \n", NAME, STR(TYPE));
+   else
+      printf("FAILURE %s \"%s\" \n", NAME, STR(TYPE));
+   return 0;
+}

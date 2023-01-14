@@ -1,0 +1,65 @@
+#include "../header.h"
+#include <stdio.h>
+#include <stdlib.h>
+
+
+void tigress_init () {
+}
+ 
+char trans[] = "___#_##_";
+ 
+int tigress_obf(char c[], int len)
+{
+	int i, diff = 0;
+#	define v(i) ((c[i] & 15) == 1)
+#	define each for (i = 0; i < len; i++)
+ 
+	each c[i]  = (c[i] == '#');
+	each c[i] |= (trans[(v(i-1)*4 + v(i)*2 + v(i+1))] == '#') << 4;
+	each diff += (c[i] & 0xf) ^ (c[i] >> 4);
+	each c[i]  = (c[i] >> 4) ? '#' : '_';
+ 
+#	undef each
+#	undef v
+	return diff;
+}
+ 
+int tigress_orig(char c[], int len)
+{
+	int i, diff = 0;
+#	define v(i) ((c[i] & 15) == 1)
+#	define each for (i = 0; i < len; i++)
+ 
+	each c[i]  = (c[i] == '#');
+	each c[i] |= (trans[(v(i-1)*4 + v(i)*2 + v(i+1))] == '#') << 4;
+	each diff += (c[i] & 0xf) ^ (c[i] >> 4);
+	each c[i]  = (c[i] >> 4) ? '#' : '_';
+ 
+#	undef each
+#	undef v
+	return diff;
+}
+
+int main(void) {
+   tigress_init();
+
+   char c1[] = "_###_##_#_#_#_#__#__\n";
+   char c2[] = "_###_##_#_#_#_#__#__\n";
+
+   int result=0;
+   while (tigress_obf(c1 + 1, sizeof(c1) - 3)){
+      result++;
+   }
+
+   int r=0;
+   while (tigress_orig(c2 + 1, sizeof(c2) - 3)){
+      r++;
+   }
+
+   if (result == r) 
+      printf("SUCCESS %s\n", NAME);
+   else
+      printf("FAILURE %s\n", NAME);
+   return 0;
+}
+

@@ -1,0 +1,30 @@
+#include "../header.h"
+
+struct str {
+  TYPE a;
+};
+struct str myArr[2];
+TYPE result;
+
+void tigress_init () {
+}
+
+void tigress_obf () {
+  result = myArr[0].a + myArr[1].a;
+}
+
+int main(int argc, char **argv){
+   result = -1;
+
+   tigress_init();
+
+   myArr[0].a = LEFT;
+   myArr[1].a = RIGHT;
+   tigress_obf();
+
+   if (result == (LEFT+RIGHT))
+      printf("SUCCESS %s \"%s\" \n", NAME, STR(TYPE));
+   else
+      printf("FAILURE %s \"%s\" \n", NAME, STR(TYPE));
+   return 0;
+}

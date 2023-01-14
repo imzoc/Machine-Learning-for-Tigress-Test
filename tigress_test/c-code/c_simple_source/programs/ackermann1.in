@@ -1,0 +1,33 @@
+#include "../header.h"
+
+// https://rosettacode.org/wiki/Ackermann_function#C
+  
+void tigress_init () {
+}
+
+int tigress_obf(int m, int n) {
+   if (!m) return n + 1;
+   if (!n) return tigress_obf(m - 1, 1);
+   return tigress_obf(m - 1, tigress_obf(m, n - 1));
+}
+
+int tigress_orig(int m, int n) {
+   if (!m) return n + 1;
+   if (!n) return tigress_orig(m - 1, 1);
+   return tigress_orig(m - 1, tigress_orig(m, n - 1));
+}
+
+int main(int argc, char **argv){
+   int result = -1;
+   int r = -2;
+   tigress_init();
+
+   result = tigress_obf(2,2);
+   r = tigress_obf(2,2);
+  
+   if (result == r) 
+      printf("SUCCESS %s\n", NAME);
+   else
+      printf("FAILURE %s\n", NAME);
+   return 0;
+}

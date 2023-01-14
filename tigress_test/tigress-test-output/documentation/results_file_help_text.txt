@@ -1,0 +1,258 @@
+Title: test results file
+Type: object
+Description: file containing information about each test run, especially the result of testing each test case
+Properties: 
+  file_type (required): 
+    Title: file type
+    Type: string
+    Description: string naming the type of file to distinguish it from other JSON files used by the program; this field always has the value "results"
+  file_format_version (required): 
+    Title: file format version
+    Type: array
+    Purpose: distinguish formats of the same file type that may be incompatible
+    Description: version for this file, as a list of numbers; version 1.0.1 would be [ 1, 0, 1 ]; the first number is interpretted as "major" version and the last number as "revision"
+    Usage: increment one of the numbers in the list to indicate a non-trivial change to the file format
+    Items: 
+      Type: int
+  framework_build_identifier (required): 
+    Title: framework build identifier
+    Type: string
+    Purpose: information and debugging
+    Description: identifies the build of the framework that produced this file, which is an automatically generated value; if I forget to update the version number, I can still determine which source version produced the executable that produced this results file
+  creation_time (required): 
+    Title: creation time
+    Type: float
+    Purpose: enables searching for results by time, so as to find previous results for the same test cases
+    Description: time since the epoch when file was created
+    Usage: field may be set using "Unix.time ()"
+  test_cases_file (required): 
+    Title: test cases file
+    Type: object
+    Description: information uniquely describing the test cases file containing the test cases used in the test run that produced the results in this file
+    Properties: 
+      filename (required): 
+        Title: filename
+        Type: string
+        Description: full (absolute) path to the test cases file
+      modified_time (required): 
+        Title: modified time
+        Type: float
+        Description: the modification time of the file, recorded when the file was used by the test program for producing the current results
+      checksum (required): 
+        Title: checksum
+        Type: string
+        Purpose: uniquely identify the test cases file
+        Description: SHA-256 hash of the file
+      gen_spec_index (optional): 
+        Title: gen_spec_index
+        Type: int
+        Purpose: identify which element of the list of transformation specifications was used to generate the set of test cases from which these results were produced
+        Description: Index into the list of generator specifications for transformations to use in creating test cases that were run to produce the results file output
+  results (required): 
+    Title: results
+    Type: array
+    Description: list of results of running test cases
+    Usage: One result object is added to this list after each test case has been run.  Before running any test case, a "null" is written into this list as a placeholder when the file is initialized.
+    Items: 
+      Type: object
+      Properties: 
+        status (required): 
+          Title: status
+          Type: string
+          Description: whether the test was completed (an incomplete test implies a result of "FAIL", but a completed test may be either a "PASS" or a "FAIL"
+        result (required): 
+          Title: result
+          Type: string
+          Description: whether the test passed or failed
+        start_time (optional): 
+          Title: start time
+          Type: float
+          Purpose: keep tract of how long a test program takes to execute
+          Description: time since the epoch when the obfuscated program was invoked to execute
+        end_time (optional): 
+          Title: end time
+          Type: float
+          Description: time since the epoch when the obfuscated program exited or was terminated and that state was registered by the calling process
+        elapsed_time (optional): 
+          Title: elapsed time for obfuscated program
+          Type: float
+          Description: time elapsed while the calling process was waiting on the obfuscated program to produce output
+        elapsed_time_orig (optional): 
+          Title: elapsed time for original program
+          Type: float
+          Description: time elapsed while the calling process was waiting on the original program to produce output
+        elapsed_time_delta_percent (optional): 
+          Title: elapsed time delta from previous result (percent)
+          Type: variant
+          Description: difference between the elapsed time for running the obfuscated program and that same measure made in the most recent previous run, as a percent (i.e., (new - old)/old * 100.0)
+          Variants: 
+            DELTA_PERCENT of:
+              Type: float
+            MISSING_VALUE
+            DIVIDE_BY_ZERO
+        test_case (required): 
+          Title: test case
+          Type: object
+          Description: all of the information needed to run one test case
+          Properties: 
+            compiler (optional): 
+              Title: compiler
+              Type: object
+              Description: full path to the compiler to use to compiler the source code
+              Properties: 
+                filename (required): 
+                  Title: filename
+                  Type: string
+                  Description: path to the program
+                version (optional): 
+                  Title: version
+                  Type: string
+                  Description: version of the program
+                version_command (optional): 
+                  Title: version command
+                  Type: string
+                  Description: a commmand to run to cause the program to output its version string, which could be compared with the contents of the "version" field
+            compiler_options (optional): 
+              Title: compiler options
+              Type: string
+              Description: command line options that should alwasy be passed to the compiler
+            tigress (optional): 
+              Title: Tigress executable
+              Type: object
+              Description: full path to the Tigress executable to use
+              Properties: 
+                filename (required): 
+                  Title: filename
+                  Type: string
+                  Description: path to the program
+                version (optional): 
+                  Title: version
+                  Type: string
+                  Description: version of the program
+                version_command (optional): 
+                  Title: version command
+                  Type: string
+                  Description: a commmand to run to cause the program to output its version string, which could be compared with the contents of the "version" field
+            tigress_options (optional): 
+              Title: Tigress options
+              Type: string
+              Description: command line options that should always be passed to Tigrees (in addition to options for the transformations)
+            max_run_seconds (required): 
+              Title: max run seconds
+              Type: int
+              Description: number of seconds after which to time out and terminate the process running the test for any given test case
+            test_number (optional): 
+              Title: test number
+              Type: int
+              Description: a unique number (within this test run) identifying the test case; generally it will start from one and increment by one
+            seed (optional): 
+              Title: seed for random number generator
+              Type: int
+              Description: seed to pass to Tigress
+            transformations (optional): 
+              Title: 
+              Type: array
+              Description: 
+              Items: 
+                Title: transformations
+                Type: object
+                Properties: 
+                  transform_name (required): 
+                    Title: transformation name
+                    Type: string
+                    Description: name of a transformation (which gets passed to Tigress in a --Transform= option)
+                  transform_options (required): 
+                    Title: transformation options
+                    Type: array
+                    Items: 
+                      Type: object
+                      Properties: 
+                        option_name (required): 
+                          Title: option name
+                          Type: string
+                          Description: name of the option; appears before the equals sign in a name/value pair on the Tigress command line
+                        option_value (optional): 
+                          Title: option value
+                          Type: string
+                          Description: value for the option; appears after the equals sign in a name/value pair on the Tigress command line
+            source_file (optional): 
+              Title: source file
+              Type: object
+              Description: description of the source file containing the code to transform for this test case
+              Properties: 
+                filename (required): 
+                  Title: filename
+                  Type: string
+                  Description: path to the source code file
+                checksum (optional): 
+                  Title: checksum
+                  Type: string
+                  Purpose: uniquely identify the source code
+                  Description: SHA-256 hash of the file
+                args (optional): 
+                  Title: args
+                  Type: array
+                  Description: arguments to pass to the program when executed
+                  Items: 
+                    Type: string
+                input (optional): 
+                  Title: input
+                  Type: string
+                  Description: data to pass to the program through its standard input when it is executed
+                functions (optional): 
+                  Title: functions
+                  Type: array
+                  Description: list of all of the function in the source code or of all of the function which should be considered for transformation
+                  Items: 
+                    Type: string
+        tigress_output (optional): 
+          Title: standard output from Tigress
+          Type: string
+          Description: complete contents of the standard output from running Tigress for the test case that produced this result
+        tigress_error (optional): 
+          Title: standard error from Tigress
+          Type: string
+          Description: complete contents of the standard error from running Tigress for the test case that produced this result
+        compiler_output (optional): 
+          Title: standard output from compiler, compiling obfuscated program
+          Type: string
+          Description: complete contents of the standard output from running the compiler to compile the obfuscated program
+        compiler_error (optional): 
+          Title: standard error from compiler, compiling obfuscated program
+          Type: string
+          Description: complete contents of the standard error from running the compiler to compile the obfuscated program
+        compiler_output_orig (optional): 
+          Title: standard output from compiler, compiling original program
+          Type: string
+          Description: complete contents of the standard output from running the compiler to compile the original program
+        compiler_error_orig (optional): 
+          Title: standard error from compiler, compiling original program
+          Type: string
+          Description: complete contents of the standard error from running the compiler to compile the original program
+        halstead_before (optional): 
+          Title: Halstead metric before obfuscation
+          Type: string
+          Description: the output of the SoftwareMetric transformation's Halstead metric for the functions which will be obfuscated
+        halstead_after (optional): 
+          Title: Halstead metric after obfuscation
+          Type: string
+          Description: the output of the SoftwareMetric transformation's Halstead metric for the functions which were obfuscated
+        halstead_function_length_greatest_difference (optional): 
+          Title: greatest difference between before and after Halstead function lengths
+          Type: int
+          Purpose: detect change produced by the obfuscating transformations (e.g., make sure the transformation had an effect)
+          Description: for each function that was obfuscated, there is an (absolute value of the) difference between the length given by the Halstead metric before the transformation and that given after the transformation for that function; one function (or possibly more that one, if there is a tie) has the largest value for absolute value of difference in length; that value is this "greatest difference".
+        halstead_difference_delta_percent (optional): 
+          Title: Halstead function length delta from previous result (percent)
+          Type: variant
+          Description: difference between the greatest difference in the Halstead function lengths and that same measure made in the most recent previous run, as a percent (i.e., (new - old)/old * 100.0)
+          Variants: 
+            DELTA_PERCENT of:
+              Type: float
+            MISSING_VALUE
+            DIVIDE_BY_ZERO
+        previous_result (optional): 
+          Title: previous result
+          Type: object
+          Description: all of the same result fields containing the data from one (most recent) previous run
+          Properties: 

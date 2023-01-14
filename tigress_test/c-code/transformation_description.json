@@ -1,0 +1,2557 @@
+{
+"file_type": "transformation description",
+"file_format_version": [ 1 ],
+"tigress_version": "3.2",
+"transformations": [
+{
+  "name": "AddOpaque",
+  "output_functions": [ "Functions", "Functions" ],
+  "input_functions": "--Functions",
+  "options": [
+    {
+      "name": "--AddOpaqueCount",
+      "modifies": "AddOpaque",
+      "value": [ "Int", { "default": 1 } ],
+      "must_test": [ "1", "2", "10" ]
+    },
+    {
+      "name": "--AddOpaqueKinds",
+      "modifies": "AddOpaque",
+      "value": [
+        "Variant",
+        {
+          "values": [
+            { "name": "*", "description": "Turns all options on." },
+            {
+              "name": "question",
+              "description":
+                "<tt>if (True || False) RealStatement else CopyOfRealStatement</tt>"
+            },
+            {
+              "name": "fake",
+              "description": "<tt>if (False) NonExistingFunction()</tt>"
+            },
+            {
+              "name": "junk",
+              "description":
+                "<tt>if (false) asm(\".byte random bytes\")</tt>"
+            },
+            {
+              "name": "true",
+              "description": "<tt>if (true) RealStatement</tt>"
+            },
+            {
+              "name": "bug",
+              "description":
+                "<tt>if (false) BuggyStatement else RealStatement</tt>"
+            },
+            {
+              "name": "call",
+              "description": "<tt>if (false) RandomFunction()</tt>"
+            }
+          ]
+        }
+      ],
+      "must_test": []
+    },
+    {
+      "name": "--AddOpaqueObfuscate",
+      "modifies": "AddOpaque",
+      "value": [ "Bool", { "default": true } ],
+      "must_test": []
+    },
+    {
+      "name": "--AddOpaqueSplitBasicBlocks",
+      "modifies": "AddOpaque",
+      "value": [ "Bool", { "default": false } ],
+      "must_test": []
+    },
+    {
+      "name": "--AddOpaqueInline",
+      "modifies": "AddOpaqueKinds=question",
+      "value": [ "Bool", { "default": false } ],
+      "must_test": []
+    },
+    {
+      "name": "--AddOpaqueSplitKinds",
+      "modifies": "AddOpaqueKinds=question",
+      "value": [
+        "Variant",
+        {
+          "values": [
+            {
+              "name": "inside",
+              "description":
+                "split out a statement at the innermost nesting level."
+            },
+            {
+              "name": "level",
+              "description":
+                "split out a statement at a level specified by <tt>--AddOpaqueSplitLevel</tt>."
+            },
+            {
+              "name": "recursive",
+              "description":
+                "same as block, but calls to split functions are also allowed to be split out."
+            },
+            {
+              "name": "deep",
+              "description":
+                "split out a nested control structure of at least height>2 into its own function <tt>funcname_split_1</tt>."
+            },
+            {
+              "name": "block",
+              "description":
+                "split a basic block (list of assignment and call statements) into two functions."
+            },
+            {
+              "name": "top",
+              "description":
+                "split the top-level list of statements into two functions <tt>funcname_split_1</tt> and <tt>funcname_split_2</tt>."
+            }
+          ]
+        }
+      ],
+      "must_test": []
+    },
+    {
+      "name": "--AddOpaqueSplitLevel",
+      "modifies": "AddOpaqueSplitKinds=level",
+      "value": [ "Int", { "default": 1 } ],
+      "must_test": [ "1", "2" ]
+    },
+    {
+      "name": "--AddOpaqueStructs",
+      "modifies": "AddOpaque",
+      "value": [
+        "Variant",
+        {
+          "values": [
+            { "name": "*", "description": "Same as list,array,input,env" },
+            {
+              "name": "env",
+              "description":
+                "Generate opaque expressions from entropy. Requires <tt>--InitEntropy</tt>."
+            },
+            {
+              "name": "input",
+              "description":
+                "Generate opaque expressions that depend on input. Requires <tt>--Inputs</tt> to set invariants over input."
+            },
+            {
+              "name": "array",
+              "description": "Generate opaque expressions using arrays"
+            },
+            {
+              "name": "list",
+              "description": "Generate opaque expressions using linked lists"
+            }
+          ]
+        }
+      ],
+      "must_test": []
+    }
+  ]
+}
+,{
+  "name": "Virtualize",
+  "output_functions": [ "Functions", "Functions" ],
+  "input_functions": "--Functions",
+  "options": [
+    {
+      "name": "--VirtualizeShortIdents",
+      "modifies": "Virtualize",
+      "value": "Other",
+      "must_test": []
+    },
+    {
+      "name": "--VirtualizeIsWindows",
+      "modifies": "NOTHING",
+      "value": "Other",
+      "must_test": []
+    },
+    {
+      "name": "--VirtualizeDispatch",
+      "modifies": "Virtualize",
+      "value": [
+        "Variant",
+        {
+          "values": [
+            { "name": "*", "description": "select all dispatch method" },
+            { "name": "?", "description": "pick a random dispatch method" },
+            {
+              "name": "interpolation",
+              "description":
+                "dispatch by searching a table using interpolation search"
+            },
+            {
+              "name": "binary",
+              "description":
+                "dispatch by searching a table using binary search"
+            },
+            {
+              "name": "linear",
+              "description":
+                "dispatch by searching a table using linear search"
+            },
+            {
+              "name": "ifnest",
+              "description": "dispatch by nested if-statements"
+            },
+            { "name": "call", "description": "dispatch by call threading" },
+            {
+              "name": "indirect",
+              "description": "dispatch by indirect threading"
+            },
+            {
+              "name": "direct",
+              "description": "dispatch by direct threading"
+            },
+            {
+              "name": "switch",
+              "description": "dispatch by while(){switch(next){...}}"
+            }
+          ],
+          "default": { "position_in_list": 9, "comment": "switch" }
+        }
+      ],
+      "must_test": []
+    },
+    {
+      "name": "--VirtualizeOperands",
+      "modifies": "Virtualize",
+      "value": [
+        "Variant",
+        {
+          "values": [
+            { "name": "mixed", "description": "same as stack,registers" },
+            {
+              "name": "registers",
+              "description": "use register arguments to instructions"
+            },
+            {
+              "name": "stack",
+              "description": "use stack arguments to instructions"
+            }
+          ],
+          "default": { "position_in_list": 2, "comment": "stack" }
+        }
+      ],
+      "must_test": []
+    },
+    {
+      "name": "--VirtualizeMaxDuplicateOps",
+      "modifies": "Virtualize",
+      "value": [ "Int", { "default": 0 } ],
+      "must_test": [ "2", "3" ]
+    },
+    {
+      "name": "--VirtualizeRandomOps",
+      "modifies": "Virtualize",
+      "value": "Other",
+      "must_test": []
+    },
+    {
+      "name": "--VirtualizeRandomizeOperandOrder",
+      "modifies": "Virtualize",
+      "value": "Other",
+      "must_test": []
+    },
+    {
+      "name": "--VirtualizeSuperOpsRatio",
+      "modifies": "Virtualize",
+      "value": "Other",
+      "must_test": [ "2.0", "5.0" ]
+    },
+    {
+      "name": "--VirtualizeMaxMergeLength",
+      "modifies": "VirtualizeSuperOpsRatio>0.0",
+      "value": [ "Int", { "default": 0 } ],
+      "must_test": [ "2", "10" ]
+    },
+    {
+      "name": "--VirtualizeInstructionHandlerSplitCount",
+      "modifies": "Virtualize",
+      "value": [ "Int", { "default": 0 } ],
+      "must_test": [ "1" ]
+    },
+    {
+      "name": "--VirtualizeAddOpaqueToVPC",
+      "modifies": "Virtualize",
+      "value": [ "Bool", { "default": false } ],
+      "must_test": []
+    },
+    {
+      "name": "--VirtualizeNumberOfBogusFuns",
+      "modifies": "Virtualize",
+      "value": [ "Int", { "default": 0 } ],
+      "must_test": [ "1" ]
+    },
+    {
+      "name": "--VirtualizeAddOpaqueToBogusFuns",
+      "modifies": "VirtualizeNumberOfBogusFuns>0",
+      "value": [ "Bool", { "default": false } ],
+      "must_test": []
+    },
+    {
+      "name": "--VirtualizeBogusFunsGenerateOutput",
+      "modifies": "VirtualizeNumberOfBogusFuns>0",
+      "value": [ "Bool", { "default": true } ],
+      "must_test": []
+    },
+    {
+      "name": "--VirtualizeBogusFunKinds",
+      "modifies": "VirtualizeNumberOfBogusFuns>0",
+      "value": [
+        "Variant",
+        {
+          "values": [
+            { "name": "*", "description": "select all options" },
+            {
+              "name": "collatz",
+              "description": "insert a computation of the Collatz sequence"
+            },
+            {
+              "name": "arithSeq",
+              "description": "insert a simple arithmetic loop"
+            },
+            {
+              "name": "trivial",
+              "description": "insert a trivial computation"
+            }
+          ]
+        }
+      ],
+      "must_test": []
+    },
+    {
+      "name": "--VirtualizeBogusLoopKinds",
+      "value": [
+        "Variant",
+        {
+          "values": [
+            { "name": "*", "description": "select all options" },
+            {
+              "name": "collatz",
+              "description": "insert a computation of the Collatz sequence"
+            },
+            {
+              "name": "arithSeq",
+              "description": "insert a simple arithmetic loop"
+            },
+            {
+              "name": "trivial",
+              "description": "insert a trivial computation"
+            }
+          ],
+          "default": { "position_in_list": 1, "comment": "collatz" }
+        }
+      ],
+      "must_test": []
+    },
+    {
+      "name": "--VirtualizeBogusLoopIterations",
+      "modifies": "VirtualizeNumberOfBogusFuns>0",
+      "value": [ "Int", { "default": 0 } ],
+      "must_test": [ "5" ]
+    },
+    {
+      "name": "--VirtualizePerformance",
+      "modifies": "Virtualize",
+      "value": [
+        "Variant",
+        {
+          "values": [
+            {
+              "name": "CacheTop",
+              "description": "Store the top of stack in a register."
+            },
+            {
+              "name": "AddressSizeLong",
+              "description":
+                "Assume addresses for accessing instruction handlers fit in a long (only available with direct dispatch)."
+            },
+            {
+              "name": "AddressSizeInt",
+              "description":
+                "Assume addresses for accessing instruction handlers fit in an int (only available with direct dispatch)."
+            },
+            {
+              "name": "AddressSizeShort",
+              "description":
+                "Assume addresses for accessing instruction handlers fit in a short (only available with direct dispatch)."
+            },
+            {
+              "name": "PointerStack",
+              "description":
+                "Use pointer operations to access stack elements."
+            },
+            {
+              "name": "IndexedStack",
+              "description": "Use array indexing to access stack elements."
+            }
+          ],
+          "default": { "position_in_list": 4, "comment": "PointerStack" }
+        }
+      ],
+      "must_test": []
+    },
+    {
+      "name": "--VirtualizeReentrant",
+      "modifies": "Virtualize",
+      "value": [ "Bool", { "default": false } ],
+      "must_test": []
+    },
+    {
+      "name": "--VirtualizeOptimizeBody",
+      "modifies": "Virtualize",
+      "value": [ "Bool", { "default": false } ],
+      "must_test": []
+    },
+    {
+      "name": "--VirtualizeOptimizeTreeCode",
+      "modifies": "Virtualize",
+      "value": [ "Bool", { "default": false } ],
+      "must_test": []
+    },
+    {
+      "name": "--VirtualizeTrace",
+      "modifies": "NOTHING",
+      "value": [
+        "Variant",
+        {
+          "values": [
+            { "name": "*", "description": "select all options" },
+            {
+              "name": "regs",
+              "description": "print register contents (not implemented)"
+            },
+            {
+              "name": "stack",
+              "description":
+                "print stack contents (currently only works if you set <tt>--VirtualizePerformance=IndexedStack</tt>)"
+            },
+            {
+              "name": "args",
+              "description": "print instruction names and arguments "
+            },
+            { "name": "instr", "description": "print instruction names" }
+          ]
+        }
+      ],
+      "must_test": []
+    },
+    {
+      "name": "--VirtualizeStackSize",
+      "modifies": "NOTHING",
+      "value": [ "Int", { "default": 32 } ],
+      "must_test": []
+    },
+    {
+      "name": "--VirtualizeComment",
+      "modifies": "NOTHING",
+      "value": "Other",
+      "must_test": []
+    },
+    {
+      "name": "--VirtualizeDump",
+      "modifies": "NOTHING",
+      "value": [
+        "Variant",
+        {
+          "values": [
+            { "name": "*", "description": "select all options" },
+            { "name": "stack", "description": "dump the evaluation stack" },
+            { "name": "array", "description": "dump the instruction array" },
+            { "name": "bytes", "description": "dump the bytecode array" },
+            {
+              "name": "calls",
+              "description": "dump the function calls found"
+            },
+            {
+              "name": "SuperOps",
+              "description": "dump the super operator instructions"
+            },
+            { "name": "strings", "description": "dump the strings found" },
+            {
+              "name": "vars",
+              "description": "dump the local variables found"
+            },
+            { "name": "types", "description": "dump the types found" },
+            {
+              "name": "instrs",
+              "description": "dump the generated virtual instructions"
+            },
+            {
+              "name": "ISA",
+              "description": "dump the Instruction Set Architecture"
+            },
+            {
+              "name": "tree",
+              "description":
+                "dump the expression trees generated from the CIL representation"
+            },
+            {
+              "name": "input",
+              "description": "dump the function that is to be virtualized"
+            }
+          ]
+        }
+      ],
+      "must_test": []
+    },
+    {
+      "name": "--VirtualizeImplicitFlowPC",
+      "modifies": "Virtualize",
+      "value": [
+        "Variant",
+        {
+          "values": [
+            { "name": "*", "description": "select all options" },
+            {
+              "name": "PCUpdate",
+              "description":
+                "insert implcit flow for each VPC load (potentially very slow)"
+            },
+            {
+              "name": "PCInit",
+              "description":
+                "insert implcit flow between the computation of the VPC address and the first load"
+            }
+          ]
+        }
+      ],
+      "must_test": []
+    },
+    {
+      "name": "--VirtualizeImplicitFlow",
+      "modifies": "VirtualizeImplicitFlowPC",
+      "value": "Other",
+      "must_test": []
+    },
+    {
+      "name": "--VirtualizeConditionalKinds",
+      "modifies": "Virtualize",
+      "value": [
+        "Variant",
+        {
+          "values": [
+            {
+              "name": "flag",
+              "description":
+                "Compute the branch from the values of the flag register, such as <tt>asm(\"cmp a b;pushf;pop\"); VPC=*(<em>expression over <tt>flag register</tt></em>)</tt>"
+            },
+            {
+              "name": "compute",
+              "description":
+                "Compute the branch, such as <tt>x=(a>b); VPC=*(<em>expression over <tt>x</tt></em>)</tt>. Not yet implemented."
+            },
+            {
+              "name": "branch",
+              "description":
+                "Use normal branches, such as <tt>if (a>b) VPC=L1 else VPC=L2</tt>"
+            }
+          ],
+          "default": { "position_in_list": 2, "comment": "branch" }
+        }
+      ],
+      "must_test": []
+    },
+    {
+      "name": "--VirtualizeOpaqueStructs",
+      "modifies": "Virtualize",
+      "value": [
+        "Variant",
+        {
+          "values": [
+            { "name": "*", "description": "Same as list,array,input,env" },
+            {
+              "name": "env",
+              "description":
+                "Generate opaque expressions from entropy. Requires <tt>--InitEntropy</tt>."
+            },
+            {
+              "name": "input",
+              "description":
+                "Generate opaque expressions that depend on input. Requires <tt>--Inputs</tt> to set invariants over input."
+            },
+            {
+              "name": "array",
+              "description": "Generate opaque expressions using arrays"
+            },
+            {
+              "name": "list",
+              "description": "Generate opaque expressions using linked lists"
+            }
+          ]
+        }
+      ],
+      "must_test": []
+    },
+    {
+      "name": "--VirtualizeEncodeByteArray",
+      "modifies": "Virtualize",
+      "value": [ "Bool", { "default": false } ],
+      "must_test": []
+    },
+    {
+      "name": "--VirtualizeObfuscateDecodeByteArray",
+      "modifies": "VirtualizeEncodeByteArray=true",
+      "value": [ "Bool", { "default": false } ],
+      "must_test": []
+    },
+    {
+      "name": "--VirtualizeDynamicBytecode",
+      "modifies": "Virtualize",
+      "value": [ "Bool", { "default": false } ],
+      "must_test": []
+    },
+    {
+      "name": "--VirtualizeDynamicOptimize",
+      "modifies": "VirtualizeDynamicBytecode=true",
+      "value": [ "Bool", { "default": true } ],
+      "must_test": []
+    },
+    {
+      "name": "--VirtualizeDynamicTrace",
+      "modifies": "NOTHING",
+      "value": [ "Int", { "default": 0 } ],
+      "must_test": []
+    },
+    {
+      "name": "--VirtualizeDynamicTraceExec",
+      "modifies": "NOTHING",
+      "value": [ "Bool", { "default": false } ],
+      "must_test": []
+    },
+    {
+      "name": "--VirtualizeDynamicDumpTree",
+      "modifies": "NOTHING",
+      "value": [ "Bool", { "default": false } ],
+      "must_test": []
+    },
+    {
+      "name": "--VirtualizeDynamicAnnotateTree",
+      "modifies": "NOTHING",
+      "value": [ "Bool", { "default": false } ],
+      "must_test": []
+    },
+    {
+      "name": "--VirtualizeDynamicCodecs",
+      "modifies": "VirtualizeDynamicBytecode=true",
+      "value": [
+        "Variant",
+        {
+          "values": [
+            {
+              "name": "stolen_word",
+              "description": "A word-sized stolen bytes encoding"
+            },
+            {
+              "name": "stolen_short",
+              "description": "A short-sized stolen bytes encoding"
+            },
+            {
+              "name": "stolen_byte",
+              "description": "A byte-sized stolen bytes encoding"
+            },
+            {
+              "name": "xtea_trace",
+              "description":
+                "An xtea encryption with tracing turned on (for debugging)"
+            },
+            { "name": "xtea", "description": "An xtea encryption " },
+            {
+              "name": "xor_call_trace",
+              "description":
+                "An xor encoding calling a xor function with tracing turned on (for debugging)"
+            },
+            {
+              "name": "xor_call",
+              "description": "An xor encoding calling a xor function"
+            },
+            {
+              "name": "xor_qword_loop",
+              "description":
+                "An xor encoding using a copy loop of qword-size primitive JIT instructions"
+            },
+            {
+              "name": "xor_word_loop",
+              "description":
+                "An xor encoding using a copy loop of word-size primitive JIT instructions"
+            },
+            {
+              "name": "xor_byte_loop",
+              "description":
+                "An xor encoding using a copy loop of byte-size primitive JIT instructions"
+            },
+            {
+              "name": "xor_transfer",
+              "description":
+                "An xor encoding using a single xor JIT instruction"
+            },
+            {
+              "name": "ident_loop",
+              "description":
+                "The identity encoding using a copy loop of primitive JIT instructions"
+            },
+            {
+              "name": "ident",
+              "description":
+                "The identity encoding using a single copy JIT instruction"
+            },
+            { "name": "none", "description": "No encoding" }
+          ]
+        }
+      ],
+      "must_test": []
+    },
+    {
+      "name": "--VirtualizeDynamicKeyTypes",
+      "modifies": "NOTHING",
+      "value": [
+        "Variant",
+        {
+          "values": [
+            {
+              "name": "code",
+              "description": "In the code segment (not implemented)"
+            },
+            { "name": "data", "description": "In the data segment" }
+          ],
+          "default": { "position_in_list": 1, "comment": "data" }
+        }
+      ],
+      "must_test": []
+    },
+    {
+      "name": "--VirtualizeDynamicBlockFraction",
+      "modifies": "VirtualizeDynamicBytecode=true",
+      "value": "Other",
+      "must_test": [ "%50" ]
+    },
+    {
+      "name": "--VirtualizeDynamicRandomizeBlocks",
+      "modifies": "VirtualizeDynamicBytecode=true",
+      "value": [ "Bool", { "default": true } ],
+      "must_test": []
+    },
+    {
+      "name": "--VirtualizeDynamicReEncode",
+      "modifies": "NOTHING",
+      "value": [ "Bool", { "default": true } ],
+      "must_test": []
+    },
+    {
+      "name": "--VirtualizeDynamicDumpCFG",
+      "modifies": "NOTHING",
+      "value": [ "Bool", { "default": false } ],
+      "must_test": []
+    },
+    {
+      "name": "--VirtualizeDynamicTraceBlock",
+      "modifies": "NOTHING",
+      "value": [ "Bool", { "default": false } ],
+      "must_test": []
+    },
+    {
+      "name": "--VirtualizeDynamicTraceBlock",
+      "modifies": "NOTHING",
+      "value": "Other",
+      "must_test": []
+    },
+    {
+      "name": "--VirtualizeDynamicCompileCommand",
+      "modifies": "NOTHING",
+      "value": "Other",
+      "must_test": []
+    }
+  ]
+}
+,{
+  "name": "Merge",
+  "output_functions": "MergeName",
+  "input_functions": "--Functions",
+  "options": [
+    {
+      "name": "--MergeName",
+      "modifies": "Merge",
+      "value": "Other",
+      "must_test": []
+    },
+    {
+      "name": "--MergeObfuscateSelect",
+      "modifies": "Merge",
+      "value": [ "Bool", { "default": false } ],
+      "must_test": []
+    },
+    {
+      "name": "--MergeOpaqueStructs",
+      "modifies": "MergeObfuscateSelect=true",
+      "value": [
+        "Variant",
+        {
+          "values": [
+            { "name": "*", "description": "Same as list,array" },
+            {
+              "name": "array",
+              "description": "Generate opaque expressions using arrays"
+            },
+            {
+              "name": "list",
+              "description": "Generate opaque expressions using linked lists"
+            }
+          ],
+          "default": { "position_in_list": 1, "comment": "array" }
+        }
+      ],
+      "must_test": []
+    },
+    {
+      "name": "--MergeFlatten",
+      "modifies": "Merge",
+      "value": [ "Bool", { "default": true } ],
+      "must_test": []
+    },
+    {
+      "name": "--MergeFlattenDispatch",
+      "modifies": "MergeFlatten=true",
+      "value": [
+        "Variant",
+        {
+          "values": [
+            {
+              "name": "?",
+              "description": "select an dispatch method at random."
+            },
+            {
+              "name": "indirect",
+              "description": "dispatch by <tt>goto* (jtab[next])</tt>"
+            },
+            {
+              "name": "goto",
+              "description":
+                "dispatch by <tt>{labl1: block1; goto block2;}</tt>"
+            },
+            {
+              "name": "switch",
+              "description":
+                "dispatch by <tt>while(1) {switch (next) {blocks}}</tt>"
+            }
+          ],
+          "default": { "position_in_list": 3, "comment": "switch" }
+        }
+      ],
+      "must_test": []
+    },
+    {
+      "name": "--MergeSplitBasicBlocks",
+      "modifies": "Merge",
+      "value": [ "Bool", { "default": false } ],
+      "must_test": []
+    },
+    {
+      "name": "--MergeRandomizeBlocks",
+      "modifies": "Merge",
+      "value": [ "Bool", { "default": false } ],
+      "must_test": []
+    },
+    {
+      "name": "--MergeConditionalKinds",
+      "modifies": "Merge",
+      "value": [
+        "Variant",
+        {
+          "values": [
+            {
+              "name": "flag",
+              "description":
+                "Compute the branch from the values of the flag register, such as <tt>asm(\"cmp a b;pushf;pop\"); goto *(<em>expression over <tt>flag register</tt></em>)</tt>"
+            },
+            {
+              "name": "compute",
+              "description":
+                "Compute the branch, such as <tt>x=(a>b); goto *(<em>expression over <tt>x</tt></em>)</tt>"
+            },
+            {
+              "name": "branch",
+              "description":
+                "Use normal branches, such as <tt>if (a>b) goto L1 else goto L2</tt>"
+            }
+          ],
+          "default": { "position_in_list": 2, "comment": "branch" }
+        }
+      ],
+      "must_test": []
+    }
+  ]
+}
+,{
+  "name": "JitDynamic",
+  "output_functions": [ "Functions", "Functions" ],
+  "input_functions": "--Functions",
+  "options": [
+    {
+      "name": "--JitDynamicEncoding",
+      "modifies": "JitDynamic",
+      "value": [
+        "Variant",
+        {
+          "values": [
+            {
+              "name": "soft",
+              "description":
+                "The jitted instructions are encoded as data (not implemented)."
+            },
+            {
+              "name": "hard",
+              "description":
+                "The jitted instructions are encoded as code.       "
+            }
+          ],
+          "default": { "position_in_list": 1, "comment": "hard" }
+        }
+      ],
+      "must_test": []
+    },
+    {
+      "name": "--JitDynamicFrequency",
+      "modifies": "JitDynamic",
+      "value": [ "Int", { "default": 0 } ],
+      "must_test": [ "1", "2" ]
+    },
+    {
+      "name": "--JitDynamicOptimizeBinary",
+      "modifies": "JitDynamic",
+      "value": [ "Int", {} ],
+      "must_test": [ "5" ]
+    },
+    {
+      "name": "--JitDynamicImplicitFlowHandle",
+      "modifies": "JitDynamic",
+      "value": [ "Bool", { "default": false } ],
+      "must_test": []
+    },
+    {
+      "name": "--JitDynamicImplicitFlow",
+      "modifies": "JitDynamicImplicitFlowHandle=true",
+      "value": "Other",
+      "must_test": []
+    },
+    {
+      "name": "--JitDynamicObfuscateHandle",
+      "modifies": "JitDynamic",
+      "value": [ "Bool", { "default": false } ],
+      "must_test": []
+    },
+    {
+      "name": "--JitDynamicObfuscateArguments",
+      "modifies": "JitDynamic",
+      "value": [ "Bool", { "default": false } ],
+      "must_test": []
+    },
+    {
+      "name": "--JitDynamicDumpOpcodes",
+      "modifies": "NOTHING",
+      "value": [
+        "Variant",
+        {
+          "values": [
+            { "name": "0x400", "description": "JIT_DEBUG_LIVENESS      " },
+            { "name": "0x200", "description": "JIT_DEBUG_ASSOC         " },
+            { "name": "0x100", "description": "JIT_DEBUG_LOADS         " },
+            { "name": "0x08", "description": "JIT_DEBUG_COMPILABLE    " },
+            { "name": "0x04", "description": "JIT_DEBUG_COMBINED      " },
+            { "name": "0x02", "description": "JIT_DEBUG_CODE          " },
+            { "name": "0x01", "description": "JIT_DEBUG_OPS          " }
+          ]
+        }
+      ],
+      "must_test": []
+    },
+    {
+      "name": "--JitDynamicTrace",
+      "modifies": "NOTHING",
+      "value": [ "Int", { "default": 0 } ],
+      "must_test": []
+    },
+    {
+      "name": "--JitDynamicTraceExec",
+      "modifies": "JitDynamic",
+      "value": [ "Bool", { "default": false } ],
+      "must_test": []
+    },
+    {
+      "name": "--JitDynamicDumpTree",
+      "modifies": "NOTHING",
+      "value": [ "Bool", { "default": false } ],
+      "must_test": []
+    },
+    {
+      "name": "--JitDynamicAnnotateTree",
+      "modifies": "NOTHING",
+      "value": [ "Bool", { "default": false } ],
+      "must_test": []
+    },
+    {
+      "name": "--JitDynamicDumpIntermediate",
+      "modifies": "NOTHING",
+      "value": [ "Bool", { "default": false } ],
+      "must_test": []
+    },
+    {
+      "name": "--JitDynamicCodecs",
+      "modifies": "JitDynamic",
+      "value": [
+        "Variant",
+        {
+          "values": [
+            {
+              "name": "stolen_word",
+              "description": "A word-sized stolen bytes encoding"
+            },
+            {
+              "name": "stolen_short",
+              "description": "A short-sized stolen bytes encoding"
+            },
+            {
+              "name": "stolen_byte",
+              "description": "A byte-sized stolen bytes encoding"
+            },
+            {
+              "name": "xtea_trace",
+              "description":
+                "An xtea encryption with tracing turned on (for debugging)"
+            },
+            { "name": "xtea", "description": "An xtea encryption " },
+            {
+              "name": "xor_call_trace",
+              "description":
+                "An xor encoding calling a xor function with tracing turned on (for debugging)"
+            },
+            {
+              "name": "xor_call",
+              "description": "An xor encoding calling a xor function"
+            },
+            {
+              "name": "xor_qword_loop",
+              "description":
+                "An xor encoding using a copy loop of qword-size primitive JIT instructions"
+            },
+            {
+              "name": "xor_word_loop",
+              "description":
+                "An xor encoding using a copy loop of word-size primitive JIT instructions"
+            },
+            {
+              "name": "xor_byte_loop",
+              "description":
+                "An xor encoding using a copy loop of byte-size primitive JIT instructions"
+            },
+            {
+              "name": "xor_transfer",
+              "description":
+                "An xor encoding using a single xor JIT instruction"
+            },
+            {
+              "name": "ident_loop",
+              "description":
+                "The identity encoding using a copy loop of primitive JIT instructions"
+            },
+            {
+              "name": "ident",
+              "description":
+                "The identity encoding using a single copy JIT instruction"
+            },
+            { "name": "none", "description": "No encoding" }
+          ]
+        }
+      ],
+      "must_test": []
+    },
+    {
+      "name": "--JitDynamicKeyTypes",
+      "modifies": "NOTHING",
+      "value": [
+        "Variant",
+        {
+          "values": [
+            {
+              "name": "code",
+              "description": "In the code segment (not implemented)"
+            },
+            { "name": "data", "description": "In the data segment" }
+          ],
+          "default": { "position_in_list": 1, "comment": "data" }
+        }
+      ],
+      "must_test": []
+    },
+    {
+      "name": "--JitDynamicBlockFraction",
+      "modifies": "JitDynamic",
+      "value": "Other",
+      "must_test": [ "%50" ]
+    },
+    {
+      "name": "--JitDynamicRandomizeBlocks",
+      "modifies": "JitDynamic",
+      "value": [ "Bool", { "default": true } ],
+      "must_test": []
+    },
+    {
+      "name": "--JitDynamicReEncode",
+      "modifies": "NOTHING",
+      "value": [ "Bool", { "default": true } ],
+      "must_test": []
+    },
+    {
+      "name": "--JitDynamicOptimize",
+      "modifies": "JitDynamic",
+      "value": [ "Bool", { "default": true } ],
+      "must_test": []
+    },
+    {
+      "name": "--JitDynamicDumpCFG",
+      "modifies": "NOTHING",
+      "value": [ "Bool", { "default": false } ],
+      "must_test": []
+    },
+    {
+      "name": "--JitDynamicTraceBlock",
+      "modifies": "NOTHING",
+      "value": "Other",
+      "must_test": []
+    },
+    {
+      "name": "--JitDynamicCompileCommand",
+      "modifies": "NOTHING",
+      "value": "Other",
+      "must_test": []
+    }
+  ]
+}
+,{
+  "name": "Split",
+  "output_functions": "SplitName",
+  "input_functions": "--Functions",
+  "options": [
+    {
+      "name": "--SplitKinds",
+      "modifies": "Split",
+      "value": [
+        "Variant",
+        {
+          "values": [
+            {
+              "name": "inside",
+              "description":
+                "split out a statement at the innermost nesting level."
+            },
+            {
+              "name": "level",
+              "description":
+                "split out a statement at a level specified by <tt>--SplitLevel</tt>."
+            },
+            {
+              "name": "recursive",
+              "description":
+                "same as block, but calls to split functions are also allowed to be split out."
+            },
+            {
+              "name": "deep",
+              "description":
+                "split out a nested control structure of at least height>2 into its own function <tt>funcname_split_1</tt>."
+            },
+            {
+              "name": "block",
+              "description":
+                "split a basic block (list of assignment and call statements) into two functions."
+            },
+            {
+              "name": "top",
+              "description":
+                "split the top-level list of statements into two functions <tt>funcname_split_1</tt> and <tt>funcname_split_2</tt>."
+            }
+          ]
+        }
+      ],
+      "must_test": []
+    },
+    {
+      "name": "--SplitCount",
+      "modifies": "Split",
+      "value": [ "Int", { "default": 1 } ],
+      "must_test": [ "1", "2", "5" ]
+    },
+    {
+      "name": "--SplitName",
+      "modifies": "Split",
+      "value": "Other",
+      "must_test": []
+    },
+    {
+      "name": "--SplitLevel",
+      "modifies": "SplitKinds=level",
+      "value": [ "Int", { "default": 1 } ],
+      "must_test": [ "1", "2" ]
+    },
+    {
+      "name": "--SplitLocalsAsFormals",
+      "modifies": "Split",
+      "value": [ "Bool", { "default": true } ],
+      "must_test": []
+    }
+  ]
+}
+,{
+  "name": "Optimize",
+  "output_functions": [ "Functions", "Functions" ],
+  "input_functions": "--Functions",
+  "options": [
+    {
+      "name": "--OptimizeKinds",
+      "modifies": "Optimize",
+      "value": [
+        "Variant",
+        {
+          "values": [
+            {
+              "name": "mergeLocals",
+              "description":
+                "Reduce the number of local variables by merging locals that are not live at the same time. Particularly useful after inlining,"
+            },
+            {
+              "name": "copyProp",
+              "description":
+                "<em>Copy Propagation</em>, i.e. after the assignment <tt>x=y</tt> replaces uses of variable <tt>x</tt> with <tt>y</tt>."
+            },
+            {
+              "name": "constProp",
+              "description":
+                "<em>Constant Propagation</em>, i.e. replace a variable with its value, if it is constant."
+            }
+          ]
+        }
+      ],
+      "must_test": []
+    },
+    {
+      "name": "--OptimizeDumpInterferenceGraph",
+      "modifies": "NOTHING",
+      "value": "Other",
+      "must_test": []
+    },
+    {
+      "name": "--OptimizeShortMergedNames",
+      "modifies": "OptimizeKinds=mergeLocals",
+      "value": "Other",
+      "must_test": []
+    }
+  ]
+}
+,{
+  "name": "EncodeArithmetic",
+  "output_functions": [ "Functions", "Functions" ],
+  "input_functions": "--Functions",
+  "options": [
+    {
+      "name": "--EncodeArithmeticKinds",
+      "modifies": "NOTHING",
+      "value": [
+        "Variant",
+        {
+          "values": [
+            {
+              "name": "integer",
+              "description": "Replace integer arithmetic."
+            }
+          ],
+          "default": { "position_in_list": 0, "comment": "integer" }
+        }
+      ],
+      "must_test": []
+    },
+    {
+      "name": "--EncodeArithmeticMaxLevel",
+      "modifies": "EncodeArithmetic",
+      "value": [ "Int", { "default": 1 } ],
+      "must_test": [ "1", "10" ]
+    },
+    {
+      "name": "--EncodeArithmeticMaxTransforms",
+      "modifies": "EncodeArithmetic",
+      "value": [ "Int", { "default": 1 } ],
+      "must_test": [ "1", "2", "10" ]
+    },
+    {
+      "name": "--EncodeArithmeticMaxSplit",
+      "modifies": "EncodeArithmetic",
+      "value": [ "Int", { "default": 1 } ],
+      "must_test": [ "1", "2", "3" ]
+    },
+    {
+      "name": "--EncodeArithmeticRepeatTimes",
+      "modifies": "EncodeArithmetic",
+      "value": [ "Int", { "default": 1 } ],
+      "must_test": [ "1", "2" ]
+    },
+    {
+      "name": "--EncodeArithmeticAddImplicitFlow",
+      "modifies": "EncodeArithmeticMaxSplit",
+      "value": [ "Bool", { "default": false } ],
+      "must_test": []
+    },
+    {
+      "name": "--EncodeArithmeticImplicitFlow",
+      "modifies": "EncodeArithmeticImplicitFlow",
+      "value": "Other",
+      "must_test": []
+    },
+    {
+      "name": "--EncodeArithmeticAddOpaques",
+      "modifies": "EncodeArithmeticMaxSplit",
+      "value": [ "Bool", { "default": false } ],
+      "must_test": []
+    },
+    {
+      "name": "--EncodeArithmeticDumpFileName",
+      "modifies": "NOTHING",
+      "value": "Other",
+      "must_test": []
+    }
+  ]
+}
+,{
+  "name": "RndArgs",
+  "output_functions": [ "Functions", "Functions" ],
+  "input_functions": "--Functions",
+  "options": [
+    {
+      "name": "--RndArgsBogusNo",
+      "modifies": "RndArgs",
+      "value": [ "Int", { "default": 0 } ],
+      "must_test": [ "1", "5" ]
+    }
+  ]
+}
+,{
+  "name": "Jit",
+  "output_functions": [ "Functions", "Functions" ],
+  "input_functions": "--Functions",
+  "options": [
+    {
+      "name": "--JitEncoding",
+      "modifies": "NOTHING",
+      "value": [
+        "Variant",
+        {
+          "values": [
+            {
+              "name": "soft",
+              "description":
+                "The jitted instructions are encoded as data (not implemented)."
+            },
+            {
+              "name": "hard",
+              "description":
+                "The jitted instructions are encoded as code.       "
+            }
+          ],
+          "default": { "position_in_list": 1, "comment": "hard" }
+        }
+      ],
+      "must_test": []
+    },
+    {
+      "name": "--JitFrequency",
+      "modifies": "Jit",
+      "value": [ "Int", { "default": 0 } ],
+      "must_test": [ "1", "2" ]
+    },
+    {
+      "name": "--JitOptimizeBinary",
+      "modifies": "Jit",
+      "value": [ "Int", {} ],
+      "must_test": []
+    },
+    {
+      "name": "--JitImplicitFlowHandle",
+      "modifies": "Jit",
+      "value": [ "Bool", { "default": false } ],
+      "must_test": []
+    },
+    {
+      "name": "--JitImplicitFlow",
+      "modifies": "JitImplicitFlowHandle=true",
+      "value": "Other",
+      "must_test": []
+    },
+    {
+      "name": "--JitCopyKinds",
+      "modifies": "JitImplicitFlowHandle=true",
+      "value": [
+        "Variant",
+        {
+          "values": [
+            { "name": "*", "description": "Same as all options turned on." },
+            {
+              "name": "bitcopy_signal",
+              "description":
+                "Loop over the bits in a variable and copy each bit in a signal handler. "
+            },
+            {
+              "name": "bitcopy_loop",
+              "description":
+                "Loop over the bits in a variable and copy each bit by testing in an if-statement."
+            },
+            {
+              "name": "bitcopy_unrolled",
+              "description":
+                "Copy a variable bit-by-bit, each bit tested by an if-statement."
+            },
+            {
+              "name": "counter_signal",
+              "description":
+                "Copy a variable by counting up to its value in a signal handler. "
+            },
+            {
+              "name": "counter",
+              "description": "Copy a variable by counting up to its value."
+            }
+          ]
+        }
+      ],
+      "must_test": []
+    },
+    {
+      "name": "--JitObfuscateHandle",
+      "modifies": "Jit",
+      "value": [ "Bool", { "default": false } ],
+      "must_test": []
+    },
+    {
+      "name": "--JitObfuscateArguments",
+      "modifies": "Jit",
+      "value": [ "Bool", { "default": false } ],
+      "must_test": []
+    },
+    {
+      "name": "--JitDumpOpcodes",
+      "modifies": "NOTHING",
+      "value": [
+        "Variant",
+        {
+          "values": [
+            { "name": "0x400", "description": "JIT_DEBUG_LIVENESS      " },
+            { "name": "0x200", "description": "JIT_DEBUG_ASSOC         " },
+            { "name": "0x100", "description": "JIT_DEBUG_LOADS         " },
+            { "name": "0x08", "description": "JIT_DEBUG_COMPILABLE    " },
+            { "name": "0x04", "description": "JIT_DEBUG_COMBINED      " },
+            { "name": "0x02", "description": "JIT_DEBUG_CODE          " },
+            { "name": "0x01", "description": "JIT_DEBUG_OPS          " }
+          ]
+        }
+      ],
+      "must_test": []
+    },
+    {
+      "name": "--JitTrace",
+      "modifies": "NOTHING",
+      "value": [ "Int", { "default": 0 } ],
+      "must_test": []
+    },
+    {
+      "name": "--JitTraceExec",
+      "modifies": "NOTHING",
+      "value": [ "Bool", { "default": false } ],
+      "must_test": []
+    },
+    {
+      "name": "--JitDumpTree",
+      "modifies": "NOTHING",
+      "value": [ "Bool", { "default": false } ],
+      "must_test": []
+    },
+    {
+      "name": "--JitDumpCFG",
+      "modifies": "NOTHING",
+      "value": [ "Bool", { "default": false } ],
+      "must_test": []
+    },
+    {
+      "name": "--JitAnnotateTree",
+      "modifies": "NOTHING",
+      "value": [ "Bool", { "default": false } ],
+      "must_test": []
+    },
+    {
+      "name": "--JitDumpIntermediate",
+      "modifies": "NOTHING",
+      "value": [ "Bool", { "default": false } ],
+      "must_test": []
+    },
+    {
+      "name": "--JitDumpBinary",
+      "modifies": "NOTHING",
+      "value": [ "Bool", { "default": false } ],
+      "must_test": []
+    },
+    {
+      "name": "--JitRandomizeBlocks",
+      "modifies": "Jit",
+      "value": [ "Bool", { "default": true } ],
+      "must_test": []
+    }
+  ]
+}
+,{
+  "name": "CleanUp",
+  "options": [
+    {
+      "name": "--CleanUpKinds",
+      "modifies": "CleanUp",
+      "value": [
+        "Variant",
+        {
+          "values": [
+            {
+              "name": "*",
+              "description": "Same as names,annotations,constants"
+            },
+            {
+              "name": "removeUnusedFunctions",
+              "description":
+                "Remove functions not reachable from <tt>main()</tt>. Use <tt>--CleanUpRoots</tt> for functions not reachable from main, but which are still invoked spontaneously."
+            },
+            {
+              "name": "noMain",
+              "description":
+                "Do not outout the <tt>main()</tt> function. This can be useful if you are transforming a library, and inserted a dummy <tt>main()</tt> that should be removed."
+            },
+            {
+              "name": "noExterns",
+              "description":
+                "Do not output any extern declarations. Instead, you must insert the corresponding <tt>#inlude</tt> files."
+            },
+            {
+              "name": "compress",
+              "description":
+                "Compress the output file by removing blank lines and extra spaces"
+            },
+            {
+              "name": "randomize",
+              "description": "Randomly reorder functions in the output file"
+            },
+            {
+              "name": "constants",
+              "description": "Fold constant expressions"
+            },
+            {
+              "name": "annotations",
+              "description":
+                "Remove annotations that Tigress uses internally. Tigress should not be called again on a file that has had annotations removed"
+            },
+            {
+              "name": "names",
+              "description": "Replace identifiers with less obvious ones"
+            }
+          ]
+        }
+      ],
+      "must_test": []
+    },
+    {
+      "name": "--CleanUpDoNotRename",
+      "modifies": "CleanUp",
+      "value": "Other",
+      "must_test": []
+    },
+    {
+      "name": "--CleanUpDumpCallGraph",
+      "modifies": "NOTHING",
+      "value": [ "Bool", {} ],
+      "must_test": []
+    },
+    {
+      "name": "--CleanUpDoNotRemove",
+      "modifies": "CleanUp",
+      "value": "Other",
+      "must_test": []
+    },
+    {
+      "name": "--CleanUpRoots",
+      "modifies": "CleanUp",
+      "value": "Other",
+      "must_test": []
+    }
+  ]
+}
+,{
+  "name": "SelfModify",
+  "output_functions": [ "Functions", "Functions" ],
+  "input_functions": "--Functions",
+  "options": [
+    {
+      "name": "--SelfModifyKinds",
+      "modifies": "SelfModify",
+      "value": [
+        "Variant",
+        {
+          "values": [
+            {
+              "name": "text",
+              "description": "Store modified registers in the text segment."
+            },
+            {
+              "name": "stack",
+              "description": "Store modified registers on the stack."
+            },
+            {
+              "name": "clobber",
+              "description":
+                "Tell the compiler which registers the code is modifying."
+            },
+            {
+              "name": "comparisons",
+              "description": "Transform binary comparisons"
+            },
+            {
+              "name": "arithmetic",
+              "description": "Transform binary arithmetic expressions"
+            },
+            {
+              "name": "indirectBranch",
+              "description": "Transform indirect branches"
+            }
+          ]
+        }
+      ],
+      "must_test": []
+    },
+    {
+      "name": "--SelfModifyFraction",
+      "modifies": "SelfModify",
+      "value": "Other",
+      "must_test": [ "%100" ]
+    },
+    {
+      "name": "--SelfModifySubExpressions",
+      "modifies": "SelfModify",
+      "value": [ "Bool", { "default": false } ],
+      "must_test": []
+    },
+    {
+      "name": "--SelfModifyBogusInstructions",
+      "modifies": "SelfModify",
+      "value": [
+        "Variant",
+        {
+          "values": [
+            { "name": "*", "description": "all operators" },
+            { "name": "Ne", "description": "!=" },
+            { "name": "Eq", "description": "==" },
+            { "name": "Ge", "description": ">=" },
+            { "name": "Le", "description": "=<" },
+            { "name": "Gt", "description": ">" },
+            { "name": "Lt", "description": "<" },
+            { "name": "Shiftrt", "description": ">>" },
+            { "name": "Shiftlt", "description": "<<" },
+            { "name": "Mod", "description": "%" },
+            { "name": "Div", "description": "/" },
+            { "name": "Mult", "description": "*" },
+            { "name": "MinusA", "description": "-" },
+            { "name": "PlusA", "description": "+" }
+          ],
+          "default": { "position_in_list": 0, "comment": "*" }
+        }
+      ],
+      "must_test": []
+    },
+    {
+      "name": "--SelfModifyBogusInstructions",
+      "modifies": "SelfModify",
+      "value": [ "Int", { "default": 0 } ],
+      "must_test": [ "0", "5" ]
+    }
+  ]
+}
+,{
+  "name": "EncodeData",
+  "output_functions": [ "Functions", "VARIABLE_USERS" ],
+  "options": [
+    {
+      "name": "--EncodeDataCodecs",
+      "modifies": "EncodeData",
+      "value": [
+        "Variant",
+        {
+          "values": [
+            { "name": "*", "description": "Same as poly1,xor,add" },
+            {
+              "name": "add",
+              "description":
+                "Add a constant and promote to next largest integer type. Will fail for the largest integer type."
+            },
+            { "name": "xor", "description": "Exclusive-or with a constant." },
+            {
+              "name": "poly1",
+              "description":
+                "Linear transformation of the form <tt>a*x+b</tt>."
+            }
+          ],
+          "default": { "position_in_list": 3, "comment": "poly1" }
+        }
+      ],
+      "must_test": []
+    }
+  ]
+}
+,{
+  "name": "AntiBranchAnalysis",
+  "output_functions": [ "Functions", "Functions" ],
+  "input_functions": "--Functions",
+  "options": [
+    {
+      "name": "--AntiBranchAnalysisKinds",
+      "modifies": "AntiBranchAnalysis",
+      "value": [
+        "Variant",
+        {
+          "values": [
+            {
+              "name": "*",
+              "description": "Same as branchFuns,goto2call,goto2push"
+            },
+            {
+              "name": "goto2nopSled",
+              "description":
+                "Replace <tt>goto L</tt> with <tt> goto *p</tt> where p is the address of a sequence of nop:s that eventually lead to L"
+            },
+            {
+              "name": "goto2push",
+              "description":
+                "Replace <tt>goto L</tt> with <tt>push L; ret</tt>"
+            },
+            {
+              "name": "goto2call",
+              "description":
+                "Replace <tt>goto L</tt> with <tt>push L; call lab; ret; lab: ret</tt>"
+            },
+            {
+              "name": "branchFuns",
+              "description":
+                "Generate calls to branch functions. <tt>--Transform=InitBranchFuns</tt> must be given prior to this transform"
+            }
+          ],
+          "default": { "position_in_list": 4, "comment": "branchFuns" }
+        }
+      ],
+      "must_test": []
+    },
+    {
+      "name": "--AntiBranchAnalysisOpaqueStructs",
+      "modifies": "AntiBranchAnalysis",
+      "value": [
+        "Variant",
+        {
+          "values": [
+            { "name": "*", "description": "Same as list,array,input,env" },
+            {
+              "name": "env",
+              "description":
+                "Generate opaque expressions from entropy. Requires <tt>--InitEntropy</tt>."
+            },
+            {
+              "name": "input",
+              "description":
+                "Generate opaque expressions that depend on input. Requires <tt>--Inputs</tt> to set invariants over input."
+            },
+            {
+              "name": "array",
+              "description": "Generate opaque expressions using arrays"
+            },
+            {
+              "name": "list",
+              "description": "Generate opaque expressions using linked lists"
+            }
+          ]
+        }
+      ],
+      "must_test": []
+    },
+    {
+      "name": "--AntiBranchAnalysisObfuscateBranchFunCall",
+      "modifies": "AntiBranchAnalysisKinds=branchFuns",
+      "value": [ "Bool", { "default": false } ],
+      "must_test": []
+    },
+    {
+      "name": "--AntiBranchAnalysisBranchFunFlatten",
+      "modifies": "AntiBranchAnalysis",
+      "value": [ "Bool", { "default": false } ],
+      "must_test": []
+    },
+    {
+      "name": "--AntiBranchAnalysisBranchFunAddressOffset",
+      "modifies": "AntiBranchAnalysis",
+      "value": "Other",
+      "must_test": []
+    }
+  ]
+}
+,{
+  "name": "InitPlugins",
+  "options": [
+    {
+      "name": "--InitPluginsInvariantPrefix",
+      "modifies": "Plugins",
+      "value": "Other",
+      "must_test": []
+    },
+    {
+      "name": "--InitPluginsResponderPrefix",
+      "modifies": "Plugins",
+      "value": "Other",
+      "must_test": []
+    },
+    {
+      "name": "--InitPluginsInitializePrefix",
+      "modifies": "Plugins",
+      "value": "Other",
+      "must_test": []
+    },
+    {
+      "name": "--InitPluginsUpdatePrefix",
+      "modifies": "Plugins",
+      "value": "Other",
+      "must_test": []
+    },
+    {
+      "name": "--InitPluginsCollectionPrefix",
+      "modifies": "Plugins",
+      "value": "Other",
+      "must_test": []
+    },
+    {
+      "name": "--InitPluginsDictionaryPrefix",
+      "modifies": "Plugins",
+      "value": "Other",
+      "must_test": []
+    }
+  ]
+}
+,{
+  "name": "Flatten",
+  "output_functions": [ "Functions", "Functions" ],
+  "input_functions": "--Functions",
+  "options": [
+    {
+      "name": "--FlattenDispatch",
+      "modifies": "Flatten",
+      "value": [
+        "Variant",
+        {
+          "values": [
+            {
+              "name": "*",
+              "description": "select a dispatch method at random."
+            },
+            {
+              "name": "thread",
+              "description":
+                "like call, but each function runs in its own thread. <b>From Version 3.3.3</b>"
+            },
+            {
+              "name": "call",
+              "description": "each block is outlined into its own function"
+            },
+            {
+              "name": "indirect",
+              "description": "dispatch by <tt>goto* (jtab[next])</tt>"
+            },
+            {
+              "name": "goto",
+              "description":
+                "dispatch by <tt>{labl1: block1; goto block2;}</tt>"
+            },
+            {
+              "name": "switch",
+              "description":
+                "dispatch by <tt>while(1) {switch (next) {blocks}}</tt>"
+            }
+          ],
+          "default": { "position_in_list": 5, "comment": "switch" }
+        }
+      ],
+      "must_test": []
+    },
+    {
+      "name": "--FlattenObfuscateNext",
+      "modifies": "Flatten",
+      "value": [ "Bool", { "default": false } ],
+      "must_test": []
+    },
+    {
+      "name": "--FlattenDumpBlocks",
+      "modifies": "NOTHING",
+      "value": [ "Bool", { "default": false } ],
+      "must_test": []
+    },
+    {
+      "name": "--FlattenOpaqueStructs",
+      "modifies": "Flatten",
+      "value": [
+        "Variant",
+        {
+          "values": [
+            { "name": "*", "description": "Same as list,array" },
+            {
+              "name": "array",
+              "description": "Generate opaque expressions using arrays"
+            },
+            {
+              "name": "list",
+              "description": "Generate opaque expressions using linked lists"
+            }
+          ],
+          "default": { "position_in_list": 1, "comment": "array" }
+        }
+      ],
+      "must_test": []
+    },
+    {
+      "name": "--FlattenSplitBasicBlocks",
+      "modifies": "Flatten",
+      "value": [ "Bool", { "default": false } ],
+      "must_test": []
+    },
+    {
+      "name": "--FlattenRandomizeBlocks",
+      "modifies": "Flatten",
+      "value": [ "Bool", { "default": false } ],
+      "must_test": []
+    },
+    {
+      "name": "--FlattenTrace",
+      "modifies": "NOTHING",
+      "value": "Other",
+      "must_test": []
+    },
+    {
+      "name": "--FlattenConditionalKinds",
+      "modifies": "Flatten",
+      "value": [
+        "Variant",
+        {
+          "values": [
+            {
+              "name": "flag",
+              "description":
+                "Compute the branch from the values of the flag register, such as <tt>asm(\"cmp a b;pushf;pop\"); goto *(<em>expression over <tt>flag register</tt></em>)</tt>"
+            },
+            {
+              "name": "compute",
+              "description":
+                "Compute the branch, such as <tt>x=(a>b); goto *(<em>expression over <tt>x</tt></em>)</tt>"
+            },
+            {
+              "name": "branch",
+              "description":
+                "Use normal branches, such as <tt>if (a>b) goto L1 else goto L2</tt>"
+            }
+          ],
+          "default": { "position_in_list": 2, "comment": "branch" }
+        }
+      ],
+      "must_test": []
+    },
+    {
+      "name": "--FlattenImplicitFlowNext",
+      "modifies": "Flatten",
+      "value": "Other",
+      "must_test": []
+    },
+    {
+      "name": "--FlattenImplicitFlow",
+      "modifies": "FlattenImplicitFlowNext>0",
+      "value": "Other",
+      "must_test": []
+    },
+    {
+      "name": "--FlattenNumberOfBlocksPerFunction",
+      "modifies": "FlattenDispatch=call",
+      "value": [ "Int", { "default": 1 } ],
+      "must_test": [ "1", "2" ]
+    },
+    {
+      "name": "--FlattenSplitName",
+      "modifies": "NOTHING",
+      "value": "Other",
+      "must_test": []
+    }
+  ]
+}
+,{
+  "name": "Inline",
+  "output_functions": [ "Functions", "CALLERS" ],
+  "input_functions": "--Functions",
+  "options": [
+    {
+      "name": "--InlineKeepFunctions",
+      "modifies": "Inline",
+      "value": "Other",
+      "must_test": []
+    },
+    {
+      "name": "--InlineDumpCallGraph",
+      "modifies": "NOTHING",
+      "value": [ "Bool", {} ],
+      "must_test": []
+    },
+    {
+      "name": "--InlineOptimizeKinds",
+      "modifies": "Inline",
+      "value": [
+        "Variant",
+        {
+          "values": [
+            {
+              "name": "gotos",
+              "description":
+                "Remove extra labels and gotos that were inserted during the inlining process."
+            },
+            {
+              "name": "mergeLocals",
+              "description":
+                "Reduce the number of local variables by merging locals that are not live at the same time. Particularly useful after inlining."
+            },
+            {
+              "name": "copyProp",
+              "description":
+                "<em>Copy Propagation</em>, i.e. after the assignment <tt>x=y</tt> replaces uses of variable <tt>x</tt> with <tt>y</tt>."
+            },
+            {
+              "name": "constProp",
+              "description":
+                "<em>Constant Propagation</em>, i.e. replace a variable with its value, if it is constant."
+            }
+          ]
+        }
+      ],
+      "must_test": []
+    }
+  ]
+}
+,{
+  "name": "RandomFuns",
+  "output_functions": [ "Functions", "--RandomFunsName" ],
+  "options": [
+    {
+      "name": "--RandomFunsFunctionCount",
+      "modifies": "RandomFuns",
+      "value": [ "Int", { "default": 1 } ],
+      "must_test": []
+    },
+    {
+      "name": "--RandomFunsTrace",
+      "modifies": "NOTHING",
+      "value": [ "Int", { "default": 0 } ],
+      "must_test": []
+    },
+    {
+      "name": "--RandomFunsTraceAssets",
+      "modifies": "RandomFuns",
+      "value": [ "Bool", {} ],
+      "must_test": []
+    },
+    {
+      "name": "--RandomFunsInputSize",
+      "modifies": "RandomFuns",
+      "value": [ "Int", { "default": 1 } ],
+      "must_test": []
+    },
+    {
+      "name": "--RandomFunsLocalStaticStateSize",
+      "modifies": "RandomFuns",
+      "value": [ "Int", { "default": 1 } ],
+      "must_test": []
+    },
+    {
+      "name": "--RandomFunsLocalDynamicStateSize",
+      "modifies": "RandomFuns",
+      "value": [ "Int", { "default": 0 } ],
+      "must_test": []
+    },
+    {
+      "name": "--RandomFunsGlobalStaticStateSize",
+      "modifies": "RandomFuns",
+      "value": [ "Int", { "default": 0 } ],
+      "must_test": []
+    },
+    {
+      "name": "--RandomFunsGlobalDynamicStateSize",
+      "modifies": "RandomFuns",
+      "value": [ "Int", { "default": 0 } ],
+      "must_test": []
+    },
+    {
+      "name": "--RandomFunsOutputSize",
+      "modifies": "RandomFuns",
+      "value": [ "Int", { "default": 1 } ],
+      "must_test": []
+    },
+    {
+      "name": "--RandomFunsCodeSize",
+      "modifies": "RandomFuns",
+      "value": [ "Int", { "default": 10 } ],
+      "must_test": []
+    },
+    {
+      "name": "--RandomFunsLoopSize",
+      "modifies": "RandomFuns",
+      "value": [ "Int", {} ],
+      "must_test": []
+    },
+    {
+      "name": "--RandomFunsBoolSize",
+      "modifies": "RandomFuns",
+      "value": [ "Int", { "default": 1 } ],
+      "must_test": []
+    },
+    {
+      "name": "--RandomFunsType",
+      "modifies": "RandomFuns",
+      "value": [
+        "Variant",
+        {
+          "values": [
+            { "name": "double", "description": "C double type" },
+            { "name": "float", "description": "C float type" },
+            { "name": "long", "description": "C long type" },
+            { "name": "int", "description": "C int type" },
+            { "name": "short", "description": "C int type" },
+            { "name": "char", "description": "C int type" }
+          ],
+          "default": { "position_in_list": 2, "comment": "long" }
+        }
+      ],
+      "must_test": []
+    },
+    { "name": "--RandomFunsName", "value": "Other", "must_test": [] },
+    {
+      "name": "--RandomFunsFailureKind",
+      "modifies": "RandomFuns",
+      "value": [
+        "Variant",
+        {
+          "values": [
+            {
+              "name": "assign",
+              "description":
+                "Insert some random assignments that, when executed, are likely to cause the program to produce the wrong output."
+            },
+            {
+              "name": "random",
+              "description":
+                "Insert some random bytes which, when executed, will probably cause the program to misbehave."
+            },
+            {
+              "name": "segv",
+              "description": "Die with a segmentation fault."
+            },
+            {
+              "name": "abort",
+              "description": "Call the <tt>abort</tt> function."
+            },
+            { "name": "message", "description": "Print a message." }
+          ],
+          "default": { "position_in_list": 2, "comment": "segv" }
+        }
+      ],
+      "must_test": []
+    },
+    {
+      "name": "--RandomFunsInputKind",
+      "modifies": "RandomFuns",
+      "value": [
+        "Variant",
+        {
+          "values": [
+            {
+              "name": "stdin",
+              "description": "Enter input to the program through stdin."
+            },
+            {
+              "name": "argv",
+              "description":
+                "Enter input to the program on the command line."
+            }
+          ],
+          "default": { "position_in_list": 1, "comment": "argv" }
+        }
+      ],
+      "must_test": []
+    },
+    {
+      "name": "--RandomFunsInputType",
+      "modifies": "RandomFuns",
+      "value": [
+        "Variant",
+        {
+          "values": [
+            {
+              "name": "string",
+              "description": "Enter input as an ASCII string."
+            },
+            {
+              "name": "float",
+              "description": "Enter input as decimal float."
+            },
+            {
+              "name": "int",
+              "description": "Enter input as a decimal integer."
+            }
+          ],
+          "default": { "position_in_list": 2, "comment": "int" }
+        }
+      ],
+      "must_test": []
+    },
+    {
+      "name": "--RandomFunsDummyFailure",
+      "modifies": "NOTHING",
+      "value": "Other",
+      "must_test": []
+    },
+    {
+      "name": "--RandomFunsTimeCheckCount",
+      "modifies": "RandomFuns",
+      "value": "Other",
+      "must_test": []
+    },
+    {
+      "name": "--RandomFunsActivationCodeCheckCount",
+      "modifies": "RandomFuns",
+      "value": "Other",
+      "must_test": []
+    },
+    {
+      "name": "--RandomFunsActivationCode",
+      "modifies": "RandomFunsActivationCodeCheckCount>0",
+      "value": "Other",
+      "must_test": []
+    },
+    {
+      "name": "--RandomFunsSecurityCheckCount",
+      "modifies": "RandomFuns",
+      "value": "Other",
+      "must_test": []
+    },
+    {
+      "name": "--RandomFunsSecurityCheckValues",
+      "modifies": "RandomFunsSecurityCheckCount>0",
+      "value": "Other",
+      "must_test": []
+    },
+    {
+      "name": "--RandomFunsPasswordCheckCount",
+      "modifies": "RandomFuns",
+      "value": "Other",
+      "must_test": []
+    },
+    {
+      "name": "--RandomFunsPassword",
+      "modifies": "RandomFunsPasswordCheckCount>0",
+      "value": "Other",
+      "must_test": []
+    },
+    {
+      "name": "--RandomFunsControlStructures",
+      "modifies": "RandomFuns",
+      "value": "Other",
+      "must_test": []
+    },
+    {
+      "name": "--RandomFunsBasicBlockSize",
+      "modifies": "RandomFuns",
+      "value": "Other",
+      "must_test": []
+    },
+    {
+      "name": "--RandomFunsForBound",
+      "modifies": "RandomFuns",
+      "value": [
+        "Variant",
+        {
+          "values": [
+            {
+              "name": "boundedAny",
+              "description":
+                "Value from the any source, will not cause index out of bounds."
+            },
+            {
+              "name": "boundedInput",
+              "description":
+                "Value from the input array, will not cause index out of bounds."
+            },
+            {
+              "name": "input",
+              "description":
+                "Value from the input array, could cause index out of bounds."
+            },
+            { "name": "constant", "description": "Literal integer." }
+          ],
+          "default": { "position_in_list": 3, "comment": "constant" }
+        }
+      ],
+      "must_test": []
+    },
+    {
+      "name": "--RandomFunsOperators",
+      "modifies": "RandomFuns",
+      "value": [
+        "Variant",
+        {
+          "values": [
+            { "name": "*", "description": "all operators" },
+            { "name": "BOr", "description": "|" },
+            { "name": "BXor", "description": "^" },
+            { "name": "BAnd", "description": "&" },
+            { "name": "Ne", "description": "!=" },
+            { "name": "Eq", "description": "==" },
+            { "name": "Ge", "description": ">=" },
+            { "name": "Le", "description": "=<" },
+            { "name": "Gt", "description": ">" },
+            { "name": "Lt", "description": "<" },
+            { "name": "Shiftrt", "description": ">>" },
+            { "name": "Shiftlt", "description": "<<" },
+            { "name": "Mod", "description": "%" },
+            { "name": "Div", "description": "/" },
+            { "name": "Mult", "description": "*" },
+            { "name": "MinusA", "description": "-" },
+            { "name": "PlusA", "description": "+" }
+          ]
+        }
+      ],
+      "must_test": []
+    },
+    {
+      "name": "--RandomFunsPointTest",
+      "modifies": "RandomFuns",
+      "value": [ "Bool", { "default": false } ],
+      "must_test": []
+    },
+    {
+      "name": "--RandomFunsPluginADTCount",
+      "modifies": "RandomFuns",
+      "value": [ "Int", { "default": 0 } ],
+      "must_test": []
+    }
+  ]
+}
+,{
+  "name": "AntiTaintAnalysis",
+  "output_functions": [ "Functions", "Functions" ],
+  "input_functions": "--Functions",
+  "options": [
+    {
+      "name": "--AntiTaintAnalysisKinds",
+      "modifies": "AntiTaintAnalysis",
+      "value": [
+        "Variant",
+        {
+          "values": [
+            { "name": "*", "description": "Same as all options turned on." },
+            {
+              "name": "vars",
+              "description":
+                "Insert implicit flow to a variable whenever it is written to. Use <tt>--LocalVariables=..</tt> and <tt>--GlobalVariables=...</tt> to specify which variables should be copied."
+            },
+            {
+              "name": "sysCalls",
+              "description":
+                "Insert implicit flow from output variables of common system calls."
+            },
+            {
+              "name": "argv",
+              "description":
+                "Insert implicit flow from <tt>argv</tt> and <tt>argc</tt> in <tt>main</tt>."
+            }
+          ]
+        }
+      ],
+      "must_test": []
+    },
+    {
+      "name": "--AntiTaintAnalysisSysCalls",
+      "modifies": "AntiTaintAnalysisKinds=sysCalls",
+      "value": [
+        "Variant",
+        {
+          "values": [
+            { "name": "*", "description": "Same as all options turned on." },
+            {
+              "name": "scanf",
+              "description":
+                "Insert implicit flow to the output of <tt>scanf</tt>."
+            },
+            {
+              "name": "getpid",
+              "description":
+                "Insert implicit flow to the output of <tt>getpid</tt>."
+            }
+          ]
+        }
+      ],
+      "must_test": []
+    },
+    {
+      "name": "--AntiTaintAnalysisImplicitFlow",
+      "modifies": "AntiTaintAnalysis",
+      "value": [
+        "Variant",
+        {
+          "values": [
+            {
+              "name": "until",
+              "description":
+                "The S-expression <tt>(until a m n)</tt> (where <tt>m,n</tt> are integers, <tt>m<n</tt>) "
+            },
+            {
+              "name": "repeat",
+              "description":
+                "The S-expression <tt>(repeat a n)</tt> (where <tt>n</tt> is an integer) is equivalent to"
+            },
+            {
+              "name": "majority",
+              "description":
+                "The S-expression <tt>(majority a b c)</tt> inserts an implicit flow that uses majority logic "
+            },
+            {
+              "name": "select",
+              "description":
+                "The S-expression <tt>(select a b c)</tt> inserts an implicit flow that picks among <tt>a,b,c</tt> "
+            },
+            {
+              "name": "compose",
+              "description":
+                "The S-expression <tt>(compose a b c)</tt> inserts an implicit flow where the output of <tt>a</tt> "
+            },
+            {
+              "name": "single",
+              "description":
+                "The expression <tt>(single a)</tt> inserts a simple implicit flow, where a is one of "
+            }
+          ]
+        }
+      ],
+      "must_test": []
+    }
+  ]
+}
+,{
+  "name": "EncodeLiterals",
+  "output_functions": [ "Functions", "Functions" ],
+  "input_functions": "--Functions",
+  "options": [
+    {
+      "name": "--EncodeLiteralsKinds",
+      "modifies": "EncodeLiterals",
+      "value": [
+        "Variant",
+        {
+          "values": [
+            { "name": "*", "description": "Same as integer,string" },
+            {
+              "name": "string",
+              "description":
+                "Replace literal strings with calls to a function that generates them"
+            },
+            {
+              "name": "integer",
+              "description":
+                "Replace literal integers with opaque expressions"
+            }
+          ]
+        }
+      ],
+      "must_test": []
+    },
+    {
+      "name": "--EncodeLiteralsEncoderName",
+      "modifies": "EncodeLiteralsKinds=string",
+      "value": "Other",
+      "must_test": []
+    },
+    {
+      "name": "--EncodeLiteralsMaxLevel",
+      "modifies": "EncodeLiteralsKinds=integer",
+      "value": [ "Int", { "default": 100 } ],
+      "must_test": [ "1", "2", "5" ]
+    },
+    {
+      "name": "--EncodeLiteralsMaxTransforms",
+      "modifies": "EncodeLiteralsKinds=integer",
+      "value": [ "Int", { "default": 100 } ],
+      "must_test": [ "1", "2", "5" ]
+    },
+    {
+      "name": "--EncodeLiteralsIntegerKinds",
+      "modifies": "EncodeLiteralsKinds=integer",
+      "value": [
+        "Variant",
+        {
+          "values": [
+            {
+              "name": "split",
+              "description":
+                "Replace literal integers by splitting into subparts, and then doing EncodeArithmetic on them."
+            },
+            {
+              "name": "opaque",
+              "description":
+                "Replace literal integers with opaque expressions"
+            }
+          ],
+          "default": { "position_in_list": 1, "comment": "opaque" }
+        }
+      ],
+      "must_test": []
+    }
+  ]
+}
+,{
+  "name": "AntiAliasAnalysis",
+  "output_functions": [ "Functions", "CALLERS" ],
+  "input_functions": "--Functions",
+  "options": [
+    {
+      "name": "--AntiAliasAnalysisObfuscateIndex",
+      "modifies": "AntiAliasAnalysis",
+      "value": [ "Bool", { "default": true } ],
+      "must_test": []
+    },
+    {
+      "name": "--AntiAliasAnalysisBogusEntries",
+      "modifies": "AntiAliasAnalysis",
+      "value": [ "Bool", { "default": true } ],
+      "must_test": []
+    }
+  ]
+}
+,{
+  "name": "Copy",
+  "output_functions": [ "Functions", "--CopyName" ],
+  "input_functions": "--Functions",
+  "options": [
+    {
+      "name": "--CopyName",
+      "modifies": "NOTHING",
+      "value": "Other",
+      "must_test": []
+    }
+  ]
+}
+]
+}

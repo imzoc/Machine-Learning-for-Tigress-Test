@@ -1,0 +1,18 @@
+tigress_test2.exe run <script-file> [options] | rerun [results-file] | continue [results-file] | continue-queue [options] | testcases-run <test cases file> [options] | worker-run <test cases file list> [options] | adhoc [options] | status [options] | stop [options] | help [topic] 
+Provide the arguments "run --help" to list the options for the run subcommand.
+  --path-to-c-compiler Location of C compiler to use; Either this must be provided
+or the path must be provided in the
+configuration file found in a conventional location:
+~/.tigress-test/config or ~/.tigress-test-config or .tigress-test-config
+  --no-config-file Don't use a config file.
+  --config-file Name of the configuration file to use, overriding the default
+  --transform Name of a transformation to be performed in the transformation pipeline. This option may be provided more than once, and the transformations will be performed in the order in which they are provided.
+  --transform-option =<name,value> An option to the last transformation that was specified with a --Transform option. This may appear multiple times.
+  --source-file Path to a file to transform. Wildcards may be included to specify that multiple files should be transformed.
+  --seeds A comma separated list of seeds to pass to Tigress.
+  --input Input to pass to the C program.
+  -- Arguments to pass to the C program.
+  --save Filename to use to save the test_cases as a script to run again later.
+  --verbosity A verbosity level between 0 and 5 for log and console output: 0 - no log or console output; 1 - output in brief; 2 - include error messages as well; 3 - include warning messages as well; 4 - include verbose information; 5 - include verbose debugging information
+  -help  Display this list of options
+  --help  Display this list of options

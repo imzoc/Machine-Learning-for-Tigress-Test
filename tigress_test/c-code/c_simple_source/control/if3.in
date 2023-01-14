@@ -1,0 +1,47 @@
+#include "../header.h"
+
+int result;
+int r;
+int left;
+int right;
+
+void tigress_init () {
+}
+
+void tigress_obf () {
+   if (left <= right)
+      if (left == right)
+         result = 42;
+      else
+         result = 1;
+   else
+      result = 2;
+}
+
+void tigress_orig () {
+   if (left <= right)
+      if (left == right)
+         r = 42;
+      else
+         r  = 1;
+   else
+      r = 2;
+}
+
+int main(int argc, char **argv){
+   result = -1;
+   r = -2;
+
+   tigress_init();
+
+   left = 10;
+   right = 10;
+   tigress_obf();
+   tigress_orig();
+
+   if (result == r)
+      printf("SUCCESS %s\n", NAME);
+   else
+      printf("FAILURE %s\n", NAME);
+   return 0;
+}

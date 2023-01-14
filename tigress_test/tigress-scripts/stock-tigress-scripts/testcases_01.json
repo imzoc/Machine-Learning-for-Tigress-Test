@@ -1,0 +1,39 @@
+{
+  "file type": "test cases",
+  "file format version": [ 1 ],
+  "cases" : [
+    {
+      "test_number": 1,
+      "seed": 1,
+      "compiler": {
+        "filename": "gcc",
+        "version": "5.4",
+        "version_command": "gcc --version"
+      },
+      "compiler_options": "",
+      "tigress": {
+        "filename": "/home/user/tigress3/bin/tigress/3.2/tigress",
+        "version": "3.2",
+        "version_command": ""
+      },
+      "tigress_options": "--Environment=x86_64:Linux:Gcc:4.6",
+      "source_file": {
+        "filename": "/home/user/tigress3/bin/tigress/3.2/test1.c",
+        "checksum": ""
+      },
+      "transformations": [
+        {
+          "name": "Virtualize",
+          "options": [
+            { "name": "Functions",
+              "value" : "fib,fac" 
+            },
+            { "name": "VirtualizeDispatch",
+              "value" : "direct" 
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

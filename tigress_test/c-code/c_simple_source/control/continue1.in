@@ -1,0 +1,40 @@
+#include "../header.h"
+
+int result;
+int r;
+
+void tigress_init () {
+}
+
+void tigress_obf () {
+   int i = 0;
+   while (i < 10) { 
+      i++;
+      if (i == 5) continue;
+      result += i;
+   }
+}
+
+void tigress_orig () {
+   int i = 0;
+   while (i < 10) { 
+      i++;
+      if (i == 5) continue;
+      r += i;
+   }
+}
+
+int main(int argc, char **argv){
+   result = 0;
+   r = 0;
+   tigress_init();
+
+   tigress_obf();
+   tigress_orig();
+
+   if (result == r)
+      printf("SUCCESS %s\n", NAME);
+   else
+      printf("FAILURE %s\n", NAME);
+   return 0;
+}

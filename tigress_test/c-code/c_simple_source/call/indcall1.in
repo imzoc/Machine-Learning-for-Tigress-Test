@@ -1,0 +1,26 @@
+#include "../header.h"
+
+int result;
+
+void tigress_init () {
+}
+
+void tigress_obf () {
+   result = 42;
+}
+
+int main(int argc, char **argv){
+   result = -1;
+
+   tigress_init();
+
+   void (*f)() = tigress_obf;
+
+   f();
+
+   if (result == 42)
+      printf("SUCCESS %s\n", NAME);
+   else
+      printf("FAILURE %s\n", NAME);
+   return 0;
+}

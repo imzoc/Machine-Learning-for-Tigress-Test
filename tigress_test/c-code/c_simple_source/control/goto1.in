@@ -1,0 +1,36 @@
+#include "../header.h"
+
+int result;
+int r;
+
+void tigress_init () {
+}
+
+void tigress_obf () {
+  void* l = &&lab2;
+  goto *l;
+  lab2:
+  result = 42;
+}
+
+void tigress_orig () {
+  void* l = &&lab2;
+  goto *l;
+  lab2:
+  r = 42;
+}
+
+int main(int argc, char **argv){
+   result = -1;
+   r = -2;
+   tigress_init();
+
+   tigress_obf();
+   tigress_orig();
+
+   if (result == r)
+      printf("SUCCESS %s\n", NAME);
+   else
+      printf("FAILURE %s\n", NAME);
+   return 0;
+}

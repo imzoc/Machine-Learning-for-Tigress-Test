@@ -1,0 +1,48 @@
+{
+  "file_type": "script",
+  "file_format_version": [ 1 ],
+  "seeds": [ 1 ],
+  "compiler_spec": {
+    "filename": "gcc",
+    "version": "5.4",
+    "version_command": "gcc --version"
+  },
+  "compiler_options": "",
+  "tigress_spec": {
+    "filename": "tigress",
+    "version": "3.2",
+    "version_command": ""
+  },
+  "tigress_options": "--Environment=x86_64:Linux:Gcc:4.6",
+  "source_files": [
+    {
+      "filename": "database/c_source/full_test_[ia][nr][pg].c",
+      "checksum": "",
+      "input": "a",
+      "args": ["b"]
+    },
+    {
+      "filename": "database/c_source/full_test_arg_and_input.c",
+      "checksum": "",
+      "input": "d",
+      "args": ["c"]
+    }
+  ],
+  "transformations": [
+    {
+      "pipeline": [
+        {
+          "name": "Virtualize",
+          "options": [
+            { "name": "Functions",
+              "value" : "test_input_or_arg" 
+            },
+            { "name": "VirtualizeDispatch",
+              "value" : "direct" 
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

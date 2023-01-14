@@ -1,0 +1,9 @@
+(executable
+ (name tigress_test2)
+ (modes (byte exe) (native exe))
+ (preprocess (pps ppx_deriving.show))
+ (libraries yojson unix atdgen str re logs SourceDescription TransformationDescription TestScriptv1_1 lib)
+  (flags (:standard -w -7)) ; OCaml version 4.10 doesn't support
+                            ; the new method syntax that fixes this warning
+)
+

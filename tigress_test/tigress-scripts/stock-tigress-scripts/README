@@ -1,0 +1,51 @@
+Tigress Test program "tigress_test2.exe" runs tests of Tigress transformations 
+that are described in a test cases JSON file and outputs results to a 
+results JSON file and brief results to the console.
+
+Dependencies:
+"dune" build manager
+"Yojson" library
+"Re" (regular expression) library
+"Atdgen" tool and library
+"Core_kernel" library
+"Logs" library
+"Sha" (Sha- 1/256/512 hashes) library
+"ppx_deriving" OCaml "preprocessor extension"
+(and ocaml 4.13.1 and opam)
+
+Install
+=======
+
+INSTALL the dependencies using opam as follows:
+opam install dune
+opam install yojson
+opam install atdgen
+opam install re
+opam install core_kernel
+opam install logs
+opam install sha
+opam install ppx_deriving
+
+Build
+=====
+
+BUILD the project with the command:
+dune build
+
+Dune produces executables that have the extension ".exe" even on when not
+building for Windows.  (But, of course, the filename can be changed.)  It puts the executable file in the directory "_build/default".
+
+There is a sample config file provided and there are two sample test cases
+files.
+
+Run
+===
+
+RUN the Tigress Test program with a command like the following:
+TIGRESS_TEST_HOME="/home/user" _build/default/tigress_test2.exe run script_01.json
+
+The results are output to a file named: results_script_01_<seconds_since_epoch>.json. It contains the result and a duplicate of the test case information, which would be used in a future version to reproduce the test.
+
+KNOWN ISSUES
+============
+

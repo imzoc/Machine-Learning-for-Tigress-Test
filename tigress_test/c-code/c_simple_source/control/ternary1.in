@@ -1,0 +1,30 @@
+#include "../header.h"
+
+int result1, result2;
+TYPE left;
+TYPE right;
+
+void tigress_init () {
+}
+
+void tigress_obf () {
+   result1 = (left<right)?1:2;
+   result2 = (left>right)?1:2;
+}
+
+int main(int argc, char **argv){
+   result1 = -1;
+   result2 = -2;
+
+   tigress_init();
+
+   left = LEFT;
+   right = LEFT+1;
+   tigress_obf();
+
+   if ((result1 == 1) && (result2 == 2))
+      printf("SUCCESS %s \"%s\" \n", NAME, STR(TYPE));
+   else
+      printf("FAILURE %s \"%s\" \n", NAME, STR(TYPE));
+   return 0;
+}

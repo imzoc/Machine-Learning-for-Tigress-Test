@@ -1,0 +1,31 @@
+#include "../header.h"
+
+TYPE left;
+TYPE right;
+TYPE result;
+
+void tigress_init () {
+}
+
+void tigress_obf () {
+   TYPE arr[] = {LEFT,RIGHT};
+   result = arr[1];
+}
+
+int main(int argc, char **argv){
+
+   result = -1;
+
+   tigress_init();
+
+   left = LEFT;
+   right = RIGHT;
+   tigress_obf();
+
+   if (result == right) 
+      printf("SUCCESS %s \"%s\"\n", NAME, STR(TYPE));
+   else
+      printf("FAILURE %s \"%s\"\n", NAME, STR(TYPE));
+
+   return 0;
+}

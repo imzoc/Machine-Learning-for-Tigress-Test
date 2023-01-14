@@ -1,0 +1,26 @@
+#include "../header.h"
+
+RESTYPE result;
+TYPE left;
+
+void tigress_init () {
+}
+
+void tigress_obf () {
+   result = (RESTYPE)left;
+}
+
+int main(int argc, char **argv){
+   result = -1;
+
+   tigress_init();
+
+   left = LEFT;
+   tigress_obf();
+
+   if (result == (RESTYPE)LEFT)
+      printf("SUCCESS %s \"%s\" \"%s\"\n", NAME, STR(RESTYPE), STR(TYPE));
+   else
+      printf("FAILURE %s \"%s\" \"%s\"\n", NAME, STR(RESTYPE), STR(TYPE));
+   return 0;
+}

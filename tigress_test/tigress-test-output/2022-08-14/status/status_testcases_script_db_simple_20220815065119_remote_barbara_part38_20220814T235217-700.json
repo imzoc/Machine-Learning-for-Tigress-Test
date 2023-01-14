@@ -1,0 +1,6 @@
+{
+  "file_type": "status",
+  "file_format_version": [ 1 ],
+  "status": { "total_test_cases": 4278, "passed": 2164, "failed": 1922 },
+  "test_cases_file": { "filename": "", "modified_time": 0.0, "checksum": "" }
+}

@@ -1,0 +1,24 @@
+{
+  "file_type": "script",
+  "file_format_version": [ 1 ],
+  "seeds": [ 1 ],
+  "compiler_spec": {
+    "filename": "gcc",
+    "version": "5.4",
+    "version_command": "gcc --version"
+  },
+  "compiler_options": "",
+  "tigress_spec": {
+    "filename": "tigress",
+    "version": "3.2",
+    "version_command": ""
+  },
+  "tigress_options": "--Environment=x86_64:Linux:Gcc:4.6",
+  "from_database": {
+    "pipeline_length": "Pairs",
+    "source_file_patterns": [ "c_simple_source/arith/binArith1_100.c" ],
+    "transformations": [ "Exclude", [ "RandomFuns", "RandomArgs"  ] ]
+   },
+  "source_files" : [],
+  "transformations" : []
+}
