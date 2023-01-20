@@ -1,10 +1,9 @@
 import json
 import pandas as pd
 
-class Process_Json:
-    def __init__(self, file_names_list=[], snippet=False):
+class Preprocess_Json:
+    def __init__(self, snippet=False):
         self.snippet = snippet
-        self.file_names_list = file_names_list
 
     def _snippet_functionality(self, d):
         """Self explanatory"""
@@ -108,7 +107,7 @@ class Process_Json:
         Takes count to make lower tasks easy.
         """
         df = self._update_nonexistant_keys(df, d)
-        df = self._fill_unfilled_lists(df, count=count)
+        df = self._fill_unfilled_lists(df, desired_length=count)
 
         for key, value in d.items():
             df[key].append(value) if value != "" else df[key].append("None")
@@ -125,17 +124,24 @@ class Process_Json:
             
             df = self._populate_df_with_data(df, sub_d, count=count)
             count += 1
+            
         return df, count
 
-    def data_to_df(self):
+    def data_to_df(self, file_name_list, snippet=False):
         """
         """
+        self.snippet = snippet
         df = {}
         
-        for file_name in self.file_names_list:
+        for file_name in file_name_list:
             d = json.load(open(file_name, "r"))['results']
             d = self._snippet_functionality(d)
             df, count = self._loop_through_data(df, d)
 
-        df = self._fill_unfilled_lists(df, count=count)
+        df = self._fill_unfilled_lists(df, desired_length=count)
         return pd.DataFrame.from_dict(df)
+
+    def gen_file_list(filename, n_files):
+        file_name_list = []
+        for i in range(n_files):
+            file_name_list.append(filename.format(str(i+1)))

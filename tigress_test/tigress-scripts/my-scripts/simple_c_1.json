@@ -14,7 +14,7 @@
   },
   "source_files": [
     {
-      "filename": "database/c_source/test?.c",
+      "filename": "database/c_simple_source/unArith1_*.c",
       "checksum": ""
     }
   ],
@@ -25,22 +25,10 @@
           "name": "Virtualize",
           "options": [
             { "name": "Functions",
-              "value" : "fib,fac" 
+              "value" : "tigress_obf" 
             },
             { "name": "VirtualizeDispatch",
               "value" : "direct" 
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "pipeline": [
-        {
-          "name": "Split",
-          "options": [
-            { "name": "Functions",
-              "value" : "fib,fac" 
             }
           ]
         }
