@@ -132,7 +132,9 @@ class Preprocess_Json:
         """
         self.snippet = snippet
         df = {}
-        
+        if isinstance(file_name_list, str):
+            file_name_list = [file_name_list] # enables proceeding
+                                              # for-loop
         for file_name in file_name_list:
             d = json.load(open(file_name, "r"))['results']
             d = self._snippet_functionality(d)
@@ -145,3 +147,8 @@ class Preprocess_Json:
         file_name_list = []
         for i in range(n_files):
             file_name_list.append(filename.format(str(i+1)))
+
+class Machine_Learning:
+    def __init__(self, type="kmodes"):
+        self.type = type
+    
