@@ -5,7 +5,7 @@
 '''
 
 
-from module.ml4tt import Preprocess_Json
+from ml4tt.ml4tt import Preprocess_Json
 preprocess_json = Preprocess_Json(snippet=False)
 
 path = "/Users/zachary/Documents/github/Machine-Learning-for-Tigress-T\
