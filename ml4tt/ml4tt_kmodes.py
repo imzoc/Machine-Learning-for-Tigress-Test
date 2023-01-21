@@ -1,16 +1,20 @@
-''' Time to do k-means!
+''' 
+    Author: Zachary Keyes
+    Purpose: Time to do kmodes!
+    
 '''
+
 
 from kmodes.kmodes import KModes 
 import ml4tt.ml4tt as ml4tt
 
-file = "/Users/zachary/Documents/github\
+in_file = "/Users/zachary/Documents/github\
 /Machine-Learning-for-Tigress-Test/tigress_test\
 /tigress-test-output/simple_c_tests\
 /2023-01-13/raw_json\
 /results_testcases_simple_c_1_20230119210217_20230119T210217-700.json"
 preprocess_json = ml4tt.Preprocess_Json()
-X = preprocess_json.data_to_df(file)
+X = preprocess_json.data_to_df(in_file)
 
 print(X.columns) # parameters so far
 
