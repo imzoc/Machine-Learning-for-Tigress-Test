@@ -4,7 +4,7 @@ Welcome to Tigress_test. This is a testing program for Dr. Christian Collberg's 
 
 ## Main ideas and jargon
 
-_Transformations_ are what tigress *actually does* to the code. There are ~32 kinds of transformations, outlined on [Tigress.wtf](https://tigress.wtf/transformations.html](https://tigress.wtf/transformations.html).
+_Transformations_ are what tigress *actually does* to the code. There are ~32 kinds of transformations, outlined on [Tigress.wtf](https://tigress.wtf/transformations.html).
 
 We must always specify *input and output .c files* (the output one, of course, will be the obfuscated/transformed version of the input one).
 
