@@ -16,10 +16,11 @@ in_file = "/Users/zachary/Documents/github\
 preprocess_json = ml4tt.Preprocess_Json()
 X = preprocess_json.data_to_df(in_file)
 
-print(X.columns) # parameters so far
+print(X) # parameters so far
 
 """ Then we do kmodes
 kmodes = KModes(n_clusters=10, init='Huang', n_init=2, verbose=1)
 clusters = kmodes.fit_predict(X)
 print(kmodes.cluster_centroids_)
 """
+
