@@ -162,12 +162,5 @@ class Preprocess_Json:
         file_name_list = []
         for i in range(n_files):
             file_name_list.append(filename.format(str(i+1)))
-
-class Machine_Learning:
-    '''
-        To-do!
-    '''
-    def __init__(self, type="kmodes"):
-        self.type = type
     
 main()
